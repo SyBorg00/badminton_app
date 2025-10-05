@@ -39,7 +39,7 @@ class PlayerDisplayLevel extends StatelessWidget {
       String strengthStr = '';
       switch (rank) {
         case PlayerRank.intermediate:
-          rankStr = 'Interm';
+          rankStr = 'Intermediate';
           break;
         case PlayerRank.levelG:
           rankStr = 'G';
@@ -90,8 +90,20 @@ class PlayerDisplayLevel extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(levelLabel(startRank, startStrength)),
-            Text(levelLabel(endRank, endStrength)),
+            Text(
+              levelLabel(startRank, startStrength),
+              style: const TextStyle(
+                color: Color.fromARGB(255, 112, 112, 112),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              levelLabel(endRank, endStrength),
+              style: const TextStyle(
+                color: Color.fromARGB(255, 112, 112, 112),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ],
         ),
       ],

@@ -51,6 +51,18 @@ class _PlayerInputState extends State<PlayerInput> {
         border: const OutlineInputBorder(),
         prefixIcon: widget.prefixIcon,
         label: Text(widget.label ?? ''),
+        prefixIconColor: WidgetStateColor.resolveWith((states) {
+          if (states.contains(WidgetState.focused)) {
+            return const Color.fromARGB(255, 10, 165, 23);
+          }
+          return Colors.black;
+        }),
+        floatingLabelStyle: WidgetStateTextStyle.resolveWith((states) {
+          if (states.contains(WidgetState.focused)) {
+            return const TextStyle(color: Color.fromARGB(255, 10, 165, 23));
+          }
+          return const TextStyle(color: Colors.black);
+        }),
         errorStyle: const TextStyle(height: 0),
         errorBorder: OutlineInputBorder(
           borderSide: BorderSide(
@@ -59,9 +71,13 @@ class _PlayerInputState extends State<PlayerInput> {
           ),
         ),
         focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.black, width: 2),
+          borderSide: BorderSide(
+            color: Color.fromARGB(255, 10, 165, 23),
+            width: 2,
+          ),
         ),
       ),
+
       validator: widget.validator,
     );
   }

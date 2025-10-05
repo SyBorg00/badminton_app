@@ -104,7 +104,7 @@ class _PlayerLevelWidgetState extends State<PlayerLevelWidget> {
         _rankLabel(rank),
         textAlign: TextAlign.center,
         style: const TextStyle(
-          fontSize: 8,
+          fontSize: 9,
           fontWeight: FontWeight.bold,
         ),
       );
@@ -186,7 +186,7 @@ class _PlayerLevelWidgetState extends State<PlayerLevelWidget> {
                     child: Text(
                       _strengthLabels[i],
                       style: const TextStyle(
-                        fontSize: 8,
+                        fontSize: 10,
                         fontWeight: FontWeight.w500,
                       ),
                     ),

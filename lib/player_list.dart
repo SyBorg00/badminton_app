@@ -12,13 +12,14 @@ class PlayerList extends StatefulWidget {
 }
 
 class _PlayerListState extends State<PlayerList> {
+  late FocusNode _focus;
   final _searchNameController = TextEditingController();
   final List<Players> playerList = [
     Players(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       nickName: "Tester1",
       fullName: "Terstert Mc Tester",
-      mobileNumber: '09999',
+      mobileNumber: '09199557889',
       email: "wedontcare@gmail.com",
       address: "you wish",
       remarks: "BRUH",
@@ -36,6 +37,10 @@ class _PlayerListState extends State<PlayerList> {
     super.initState();
     filteredPlayers = playerList;
     _searchNameController.addListener(_onSearchPlayer);
+    _focus = FocusNode();
+    _focus.addListener(() {
+      setState(() {});
+    });
   }
 
   void _onSearchPlayer() {
@@ -163,25 +168,39 @@ class _PlayerListState extends State<PlayerList> {
               height: 50,
               child: TextField(
                 controller: _searchNameController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black),
                   ),
-                  label: Text(
+                  label: const Text(
                     "Search by name or nick name",
                     style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                   ),
-                  prefixIcon: Icon(
+                  prefixIcon: const Icon(
                     Icons.search,
                     color: Color.fromARGB(255, 20, 148, 58),
                   ),
-                  focusedBorder: OutlineInputBorder(
+                  focusedBorder: const OutlineInputBorder(
                     borderSide: BorderSide(
                       color: Color.fromARGB(255, 57, 158, 37),
                       width: 2,
                     ),
                   ),
                   focusColor: Colors.green,
+                  prefixIconColor: WidgetStateColor.resolveWith((states) {
+                    if (states.contains(WidgetState.focused)) {
+                      return const Color.fromARGB(255, 10, 165, 23);
+                    }
+                    return Colors.black;
+                  }),
+                  floatingLabelStyle: WidgetStateTextStyle.resolveWith((
+                    states,
+                  ) {
+                    if (states.contains(WidgetState.focused)) {
+                      return const TextStyle(color: Colors.green);
+                    }
+                    return const TextStyle(color: Colors.black);
+                  }),
                 ),
               ),
             ),

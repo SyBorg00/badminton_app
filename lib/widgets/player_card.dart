@@ -25,7 +25,7 @@ class PlayerCard extends StatelessWidget {
                 child: Icon(
                   Icons.person,
                   color: Colors.white,
-                  size: 30,
+                  size: 40,
                 ),
               ),
             ),
@@ -40,11 +40,17 @@ class PlayerCard extends StatelessWidget {
                     Text(
                       player.nickName,
                       style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 18,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
-                    Text(player.fullName),
+                    Text(
+                      player.fullName,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        color: Color.fromARGB(255, 70, 70, 70),
+                      ),
+                    ),
                     const SizedBox(
                       height: 20,
                     ),
