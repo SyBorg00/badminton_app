@@ -186,7 +186,6 @@ class _PlayerListState extends State<PlayerList> {
                       width: 2,
                     ),
                   ),
-                  focusColor: Colors.green,
                   prefixIconColor: WidgetStateColor.resolveWith((states) {
                     if (states.contains(WidgetState.focused)) {
                       return const Color.fromARGB(255, 10, 165, 23);
@@ -208,70 +207,72 @@ class _PlayerListState extends State<PlayerList> {
         ),
       ),
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: ListView.builder(
-            itemCount: filteredPlayers.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Padding(
-                padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-                child: Dismissible(
-                  key: ValueKey(filteredPlayers[index]),
-                  direction: DismissDirection.horizontal,
-                  confirmDismiss: (direction) =>
-                      _confirmDelete(context, filteredPlayers[index]),
-                  onDismissed: (_) => {
-                    setState(() {
-                      filteredPlayers.removeAt(index);
-                    }),
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Player successfully deleted'),
-                      ),
-                    ),
-                  },
-                  background: Container(
-                    color: Colors.red,
-                    alignment: Alignment.centerLeft,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: const Icon(Icons.delete, color: Colors.white),
-                  ),
-                  secondaryBackground: Container(
-                    color: Colors.red,
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: const Icon(
-                      Icons.delete,
-                      color: Color.fromARGB(255, 21, 255, 0),
-                    ),
-                  ),
-                  child: InkWell(
-                    onTap: () async {
-                      final result = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (ctx) => PlayerEdit(
-                            player: filteredPlayers[index],
-                            index: index,
+        child: filteredPlayers.isEmpty
+            ? const Text("The list is empty")
+            : Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: ListView.builder(
+                  itemCount: filteredPlayers.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                      child: Dismissible(
+                        key: ValueKey(filteredPlayers[index]),
+                        direction: DismissDirection.horizontal,
+                        confirmDismiss: (direction) =>
+                            _confirmDelete(context, filteredPlayers[index]),
+                        onDismissed: (_) => {
+                          setState(() {
+                            filteredPlayers.removeAt(index);
+                          }),
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Player successfully deleted'),
+                            ),
+                          ),
+                        },
+                        background: Container(
+                          color: Colors.red,
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: const Icon(Icons.delete, color: Colors.white),
+                        ),
+                        secondaryBackground: Container(
+                          color: Colors.red,
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: const Icon(
+                            Icons.delete,
+                            color: Color.fromARGB(255, 21, 255, 0),
                           ),
                         ),
-                      );
+                        child: InkWell(
+                          onTap: () async {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (ctx) => PlayerEdit(
+                                  player: filteredPlayers[index],
+                                  index: index,
+                                ),
+                              ),
+                            );
 
-                      if (!mounted || result == null) return;
+                            if (!mounted || result == null) return;
 
-                      if (result is Players) {
-                        _editPlayer(result);
-                      } else if (result == 'delete') {
-                        _deletePlayer(filteredPlayers[index]);
-                      }
-                    },
-                    child: PlayerCard(player: filteredPlayers[index]),
-                  ),
+                            if (result is Players) {
+                              _editPlayer(result);
+                            } else if (result == 'delete') {
+                              _deletePlayer(filteredPlayers[index]);
+                            }
+                          },
+                          child: PlayerCard(player: filteredPlayers[index]),
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
-        ),
+              ),
       ),
     );
   }
