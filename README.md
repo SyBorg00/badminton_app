@@ -1,3 +1,3 @@
 # badminton_app
 
-A new Flutter project.
+A CS Elective 2 project. A mobile app for badminton
