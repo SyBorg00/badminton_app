@@ -50,7 +50,10 @@ class _PlayerAddState extends State<PlayerAdd> {
     final isValid = _key.currentState?.validate() ?? false;
     if (!isValid) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please fix validation errors")),
+        SnackBar(
+          content: const Text("Please fix validation errors"),
+          backgroundColor: Colors.red[400],
+        ),
       );
       return;
     } else {

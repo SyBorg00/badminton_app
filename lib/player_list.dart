@@ -167,12 +167,9 @@ class _PlayerListState extends State<PlayerList> {
       appBar: AppBar(
         backgroundColor: Colors.green,
         leading: Image.asset('images/badminton_logo_white.png'),
-        title: const Padding(
-          padding: EdgeInsets.only(left: 20),
-          child: Text(
-            "All Players",
-            style: TextStyle(fontWeight: FontWeight.w900),
-          ),
+        title: const Text(
+          "All Players",
+          style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
         ),
         actions: [
           Padding(
@@ -183,7 +180,7 @@ class _PlayerListState extends State<PlayerList> {
                 Icons.add_circle,
                 color: Color.fromARGB(255, 255, 255, 255),
               ),
-              iconSize: 40,
+              iconSize: 50,
             ),
           ),
         ],
@@ -192,20 +189,18 @@ class _PlayerListState extends State<PlayerList> {
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: SizedBox(
-              height: 50,
+              height: 40,
               child: TextField(
                 controller: _searchNameController,
                 decoration: InputDecoration(
-                  border: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black),
-                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: const OutlineInputBorder(borderSide: BorderSide.none),
                   label: const Text(
                     "Search by name or nick name",
-                    style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                   ),
                   prefixIcon: const Icon(
                     Icons.search,
-                    color: Color.fromARGB(255, 20, 148, 58),
                   ),
                   focusedBorder: const OutlineInputBorder(
                     borderSide: BorderSide(
@@ -223,9 +218,14 @@ class _PlayerListState extends State<PlayerList> {
                     states,
                   ) {
                     if (states.contains(WidgetState.focused)) {
-                      return const TextStyle(color: Colors.green);
+                      return const TextStyle(
+                        color: Color.fromARGB(255, 255, 255, 255),
+                        backgroundColor: Colors.green,
+                      );
                     }
-                    return const TextStyle(color: Colors.black);
+                    return const TextStyle(
+                      color: Color.fromARGB(255, 57, 57, 57),
+                    );
                   }),
                 ),
               ),
