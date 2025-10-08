@@ -68,7 +68,7 @@ class PlayerDisplayLevel extends StatelessWidget {
           strengthStr = 'Strong';
           break;
       }
-      return '$strengthStr $rankStr';
+      return (rankStr != 'Open') ? '$strengthStr $rankStr' : rankStr;
     }
 
     return Column(

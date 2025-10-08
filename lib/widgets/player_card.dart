@@ -17,15 +17,18 @@ class PlayerCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: [
-            const Padding(
-              padding: EdgeInsets.all(6.0),
+            Padding(
+              padding: const EdgeInsets.all(6.0),
               child: CircleAvatar(
                 backgroundColor: Colors.green,
                 radius: 30,
-                child: Icon(
-                  Icons.person,
-                  color: Colors.white,
-                  size: 40,
+                child: Text(
+                  player.nickName[0],
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
               ),
             ),
