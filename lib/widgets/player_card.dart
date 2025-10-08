@@ -43,7 +43,7 @@ class PlayerCard extends StatelessWidget {
                     Text(
                       player.nickName,
                       style: const TextStyle(
-                        fontSize: 18,
+                        fontSize: 22,
                         fontWeight: FontWeight.w900,
                       ),
                     ),

@@ -17,15 +17,41 @@ class _PlayerListState extends State<PlayerList> {
   final List<Players> playerList = [
     Players(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
-      nickName: "Tester1",
-      fullName: "Terstert Mc Tester",
+      nickName: "Henry",
+      fullName: "Henry Stickminn",
       mobileNumber: '09199557889',
-      email: "wedontcare@gmail.com",
-      address: "you wish",
-      remarks: "BRUH",
+      email: "henry@gmail.com",
+      address: "Davao City",
+      remarks: "A well average player",
       level: PlayerLevel(
         rank: RankRange(PlayerRank.intermediate, PlayerRank.levelD),
         strength: StrengthRange(PlayerStrength.weak, PlayerStrength.strong),
+      ),
+    ),
+    Players(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      nickName: "Charles",
+      fullName: "Charles McHollgan",
+      mobileNumber: '09209988291',
+      email: "charlie@gmail.com",
+      address: "Digos Cityt",
+      remarks: "High level",
+      level: PlayerLevel(
+        rank: RankRange(PlayerRank.levelE, PlayerRank.open),
+        strength: StrengthRange(PlayerStrength.weak, PlayerStrength.strong),
+      ),
+    ),
+    Players(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      nickName: "Ellie",
+      fullName: "Ellen Rose",
+      mobileNumber: '09109928124',
+      email: "charlie@gmail.com",
+      address: "Tagum City",
+      remarks: "Exceptionally Medium",
+      level: PlayerLevel(
+        rank: RankRange(PlayerRank.levelG, PlayerRank.levelD),
+        strength: StrengthRange(PlayerStrength.strong, PlayerStrength.mid),
       ),
     ),
   ];
@@ -140,6 +166,8 @@ class _PlayerListState extends State<PlayerList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.green,
+        leading: Image.asset('images/badminton_logo_white.png'),
         title: const Padding(
           padding: EdgeInsets.only(left: 20),
           child: Text(
@@ -154,7 +182,7 @@ class _PlayerListState extends State<PlayerList> {
               onPressed: _showAddPlayer,
               icon: const Icon(
                 Icons.add_circle,
-                color: Colors.green,
+                color: Color.fromARGB(255, 255, 255, 255),
               ),
               iconSize: 40,
             ),
@@ -232,18 +260,24 @@ class _PlayerListState extends State<PlayerList> {
                           ),
                         },
                         background: Container(
-                          color: Colors.red,
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                           alignment: Alignment.centerLeft,
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: const Icon(Icons.delete, color: Colors.white),
                         ),
                         secondaryBackground: Container(
-                          color: Colors.red,
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                           alignment: Alignment.centerRight,
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: const Icon(
                             Icons.delete,
-                            color: Color.fromARGB(255, 21, 255, 0),
+                            color: Color.fromARGB(255, 255, 255, 255),
                           ),
                         ),
                         child: InkWell(
