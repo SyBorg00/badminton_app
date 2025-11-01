@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:badminton_app/widgets/player_input.dart';
+import 'package:badminton_app/widgets/app_input.dart';
 import 'package:badminton_app/widgets/player_level.dart';
 import 'package:badminton_app/model/players.dart';
 import 'package:flutter/services.dart';
@@ -187,21 +187,21 @@ class _PlayerEditState extends State<PlayerEdit> {
             key: _key,
             child: Column(
               children: [
-                PlayerInput(
+                AppInput(
                   controller: _nickNameController,
                   label: 'NICKNAME',
                   validator: _validateNotEmpty,
                   prefixIcon: const Icon(Icons.person),
                 ),
                 const SizedBox(height: 30),
-                PlayerInput(
+                AppInput(
                   controller: _fullNameController,
                   label: 'FULL NAME',
                   validator: _validateNotEmpty,
                   prefixIcon: const Icon(Icons.person),
                 ),
                 const SizedBox(height: 30),
-                PlayerInput(
+                AppInput(
                   controller: _mobileNumberController,
                   type: TextInputType.phone,
                   label: 'MOBILE NUMBER',
@@ -210,7 +210,7 @@ class _PlayerEditState extends State<PlayerEdit> {
                   prefixIcon: const Icon(Icons.phone),
                 ),
                 const SizedBox(height: 30),
-                PlayerInput(
+                AppInput(
                   controller: _emailController,
                   type: TextInputType.emailAddress,
                   label: 'EMAIL ADDRESS',
@@ -218,7 +218,7 @@ class _PlayerEditState extends State<PlayerEdit> {
                   prefixIcon: const Icon(Icons.email),
                 ),
                 const SizedBox(height: 30),
-                PlayerInput(
+                AppInput(
                   controller: _addressController,
                   type: TextInputType.multiline,
                   label: 'HOME ADDRESS',
@@ -226,7 +226,7 @@ class _PlayerEditState extends State<PlayerEdit> {
                   prefixIcon: const Icon(Icons.home),
                 ),
                 const SizedBox(height: 30),
-                PlayerInput(
+                AppInput(
                   controller: _remarkController,
                   type: TextInputType.multiline,
                   label: 'REMARKS',
