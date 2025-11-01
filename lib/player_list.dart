@@ -81,7 +81,6 @@ class _PlayerListState extends State<PlayerList> {
   }
 
   //#region CRUD Function operations
-
   void _addPlayer(Players player) {
     setState(() {
       playerList.add(player);
