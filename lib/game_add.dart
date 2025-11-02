@@ -12,6 +12,7 @@ class GameAdd extends StatefulWidget {
 }
 
 class _GameAddState extends State<GameAdd> {
+  final _key = GlobalKey<FormState>();
   final _gameTitleController = TextEditingController();
   final _courtNameController = TextEditingController();
   final _courtRateController = TextEditingController();
@@ -23,6 +24,34 @@ class _GameAddState extends State<GameAdd> {
     setState(() {
       isDivided = value ?? false;
     });
+  }
+
+  void _submitGameData() {
+    //check if there are empty fields
+    final isValid = _key.currentState?.validate() ?? false;
+    if (!isValid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please fix validation errors")),
+      );
+      return;
+    } else {
+      widget.onAddGame(
+        Games(
+          id: DateTime.now().microsecondsSinceEpoch.toString(),
+          title: _gameTitleController.text,
+          playerCount: 0,
+          total: 0,
+          court: GameCourt(
+            courtName: _courtNameController.text,
+            courtRate: double.parse(_courtRateController.text),
+            shottlecockPrice: double.parse(_courtRateController.text),
+            section: section,
+            isDivided: isDivided,
+          ),
+        ),
+      );
+      Navigator.pop(context);
+    }
   }
 
   @override

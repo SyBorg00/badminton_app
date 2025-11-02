@@ -13,28 +13,16 @@ class GameList extends StatefulWidget {
 class _GameListState extends State<GameList> {
   late FocusNode _focus;
   final _searchGameController = TextEditingController();
-  final List<Games> gameList = [
-    Games(
-      title: "Testing",
-      playerCount: 2,
-      total: 200,
-      court: GameCourt(
-        courtName: 'Hmm',
-        courtRate: 45,
-        shottlecockPrice: 500,
-        section: CourtSection(
-          number: 1,
-          schedule: CourtSchedule(start: TimeOfDay.now(), end: TimeOfDay.now()),
-        ),
-        isDivided: false,
-      ),
-    ),
-  ];
+  final List<Games> gameList = [];
 
   @override
   void initState() {
     super.initState();
     _searchGameController.addListener(_onSearchGame);
+    _focus = FocusNode();
+    _focus.addListener(() {
+      setState(() {});
+    });
   }
 
   List<Games> filteredGameList = [];
@@ -43,6 +31,48 @@ class _GameListState extends State<GameList> {
     setState(() {
       gameList.add(games);
     });
+  }
+
+  void _deleteGame(Games games) {
+    setState(() {
+      gameList.removeWhere((g) => g.id == games.id);
+      filteredGameList.removeWhere((g) => g.id == games.id);
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Game successfully deleted')),
+    );
+  }
+
+  Future<bool> _confirmDelete(BuildContext context, Games games) async {
+    return await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Confirm Delete'),
+            content: Text(
+              'Are you sure you want to delete "${games.title}"?',
+              style: const TextStyle(color: Colors.black),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context, true),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                child: const Text(
+                  'Delete',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        ) ??
+        false;
   }
 
   void _showAddGame() {
@@ -146,7 +176,43 @@ class _GameListState extends State<GameList> {
                 itemBuilder: (BuildContext context, int index) {
                   return Dismissible(
                     key: ValueKey(gameList[index]),
-                    child: GameCard(),
+                    direction: DismissDirection.horizontal,
+                    confirmDismiss: (direction) =>
+                        _confirmDelete(context, gameList[index]),
+                    onDismissed: (_) => {
+                      setState(() {
+                        filteredGameList.removeAt(index);
+                      }),
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Game successfully deleted'),
+                        ),
+                      ),
+                    },
+                    background: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: const Icon(Icons.delete, color: Colors.white),
+                    ),
+                    secondaryBackground: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: const Icon(
+                        Icons.delete,
+                        color: Color.fromARGB(255, 255, 255, 255),
+                      ),
+                    ),
+                    child: GameCard(
+                      games: gameList[index],
+                    ),
                   );
                 },
               ),

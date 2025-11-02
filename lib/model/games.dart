@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Games {
+  final String id;
   final String title;
   final int playerCount;
   final int total;
@@ -8,6 +9,7 @@ class Games {
   final GameCourt court;
 
   Games({
+    required this.id,
     required this.title,
     required this.playerCount,
     required this.total,
@@ -19,7 +21,7 @@ class GameCourt {
   final String courtName;
   final double courtRate;
   final double shottlecockPrice;
-  final CourtSection section;
+  final List<CourtSection?> section;
   final bool isDivided;
 
   GameCourt({
