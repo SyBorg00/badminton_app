@@ -11,9 +11,6 @@ class GameCard extends StatelessWidget {
       child: Column(
         children: [
           Text(games.title),
-          Text(
-            '${games.court.section.schedule.start} - ${games.court.section.schedule.end}',
-          ),
           Text(games.playerCount.toString()),
           Text(games.total.toString()),
         ],
