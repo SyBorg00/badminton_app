@@ -4,7 +4,8 @@ import 'package:badminton_app/widgets/game_card.dart';
 import 'package:flutter/material.dart';
 
 class GameList extends StatefulWidget {
-  const GameList({super.key});
+  final void Function(BuildContext context)? onAddGame;
+  const GameList({super.key, this.onAddGame});
 
   @override
   State<GameList> createState() => _GameListState();
@@ -169,16 +170,16 @@ class _GameListState extends State<GameList> {
         ),
       ),
       body: Center(
-        child: gameList.isEmpty
+        child: filteredGameList.isEmpty
             ? const Text("No games listed yet")
             : ListView.builder(
-                itemCount: gameList.length,
+                itemCount: filteredGameList.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Dismissible(
-                    key: ValueKey(gameList[index]),
+                    key: ValueKey(filteredGameList[index]),
                     direction: DismissDirection.horizontal,
                     confirmDismiss: (direction) =>
-                        _confirmDelete(context, gameList[index]),
+                        _confirmDelete(context, filteredGameList[index]),
                     onDismissed: (_) => {
                       setState(() {
                         filteredGameList.removeAt(index);
