@@ -16,17 +16,29 @@ class CourtSectionWidget extends StatefulWidget {
 }
 
 class _CourtSectionWidgetState extends State<CourtSectionWidget> {
-  late final List<TextEditingController> numberController;
-  late final List<CourtSchedule> schedule;
+  final List<TextEditingController> numberController = [];
+  final List<CourtSchedule> schedule = [];
 
   @override
   void initState() {
     super.initState();
-    final length = widget.section?.length ?? 5;
-    numberController.addAll(List.generate(5, (_) => TextEditingController()));
+    final length = widget.section?.length ?? 0;
+
+    numberController.addAll(
+      List.generate(length, (_) => TextEditingController()),
+    );
+
     schedule.addAll(
       List.generate(length, (_) => CourtSchedule(start: null, end: null)),
     );
+  }
+
+  @override
+  void dispose() {
+    for (final controller in numberController) {
+      controller.dispose();
+    }
+    super.dispose();
   }
 
   Future<void> _selectScheduleRange(int index) async {
@@ -49,7 +61,6 @@ class _CourtSectionWidgetState extends State<CourtSectionWidget> {
     final startMin = start.hour * 60 + start.minute;
     final endMin = end.hour * 60 + end.minute;
     if (endMin <= startMin) {
-      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('End time must be after start time')),
       );
@@ -79,40 +90,92 @@ class _CourtSectionWidgetState extends State<CourtSectionWidget> {
     widget.onSectionChanged?.call(updatedSections);
   }
 
+  void _addSection() {
+    setState(() {
+      numberController.add(TextEditingController());
+      schedule.add(CourtSchedule(start: null, end: null));
+    });
+    _updateParent();
+  }
+
+  void _removeSection(int index) {
+    setState(() {
+      numberController[index].dispose();
+      numberController.removeAt(index);
+      schedule.removeAt(index);
+    });
+    _updateParent();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final hasSections = numberController.isNotEmpty;
+
     return Center(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
-            children: [
-              Text('Court Number'),
-              Text('Schedule (Start - End)'),
-            ],
-          ),
+          if (hasSections)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                children: [
+                  Expanded(child: Text('Court Number')),
+                  SizedBox(width: 8),
+                  Expanded(child: Text('Schedule (Start - End)')),
+                  SizedBox(width: 48), // space for remove button
+                ],
+              ),
+            ),
+
           ListView.builder(
-            itemCount: widget.section?.length ?? 0,
-            itemBuilder: (BuildContext context, int index) {
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: numberController.length,
+            itemBuilder: (context, index) {
               final sched = schedule[index];
               final scheduleText = (sched.start != null && sched.end != null)
                   ? '${sched.start!.format(context)} - ${sched.end!.format(context)}'
                   : 'Select Time Range';
 
-              return Row(
-                children: [
-                  TextFormField(
-                    controller: numberController[index],
-                    keyboardType: TextInputType.number,
-                    onChanged: (_) => _updateParent(),
-                  ),
-
-                  ElevatedButton(
-                    onPressed: () => _selectScheduleRange(index),
-                    child: Text(scheduleText),
-                  ),
-                ],
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: numberController[index],
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(labelText: 'Court #'),
+                        onChanged: (_) => _updateParent(),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () => _selectScheduleRange(index),
+                        child: Text(scheduleText),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () => _removeSection(index),
+                    ),
+                  ],
+                ),
               );
             },
+          ),
+
+          const SizedBox(height: 10),
+
+          Center(
+            child: ElevatedButton.icon(
+              onPressed: _addSection,
+              icon: const Icon(Icons.add),
+              label: const Text('Add Section'),
+            ),
           ),
         ],
       ),

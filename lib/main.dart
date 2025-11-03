@@ -1,3 +1,4 @@
+import 'package:badminton_app/game_list.dart';
 import 'package:badminton_app/player_list.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +12,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: PlayerList(),
+      home: GameList(),
       debugShowCheckedModeBanner: false,
     );
   }

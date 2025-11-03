@@ -26,6 +26,12 @@ class _GameAddState extends State<GameAdd> {
     });
   }
 
+  //for any empty fields
+  String? _validateNotEmpty(String? val) {
+    if (val == null || val.trim().isEmpty) return 'Please fill this field';
+    return null;
+  }
+
   void _submitGameData() {
     //check if there are empty fields
     final isValid = _key.currentState?.validate() ?? false;
@@ -61,7 +67,7 @@ class _GameAddState extends State<GameAdd> {
         title: const Text("New Game"),
         actions: [
           TextButton(
-            onPressed: () {},
+            onPressed: _submitGameData,
             child: const Text(
               "Add",
               style: TextStyle(fontSize: 16, color: Colors.green),
@@ -74,24 +80,31 @@ class _GameAddState extends State<GameAdd> {
       ),
       body: Center(
         child: Form(
+          key: _key,
           child: ListView(
             children: [
               AppInput(controller: _gameTitleController, label: 'Game Title'),
               AppInput(
                 controller: _courtNameController,
                 label: 'Game Court',
+                validator: _validateNotEmpty,
               ),
 
               AppInput(
                 controller: _courtRateController,
                 label: 'Court Rate',
+                validator: _validateNotEmpty,
+                type: TextInputType.number,
               ),
               AppInput(
                 controller: _shottlecockPriceController,
                 label: 'Shuttlecock Price',
+                validator: _validateNotEmpty,
+                type: TextInputType.number,
               ),
-              Checkbox(
-                value: true,
+              CheckboxListTile(
+                title: const Text('Divide the court equally among players?'),
+                value: isDivided,
                 onChanged: handleCheckboxChange,
               ),
               CourtSectionWidget(
