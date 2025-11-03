@@ -1,33 +1,68 @@
+import 'package:badminton_app/model/players.dart';
 import 'package:flutter/material.dart';
 
 class Games {
   final String id;
   final String title;
-  final int playerCount;
-  final int total;
-
   final GameCourt court;
 
   Games({
     required this.id,
     required this.title,
-    required this.playerCount,
-    required this.total,
     required this.court,
   });
+
+  int get playerCount {
+    final allPlayers = <Players>{};
+
+    for (final section in court.section) {
+      if (section?.player != null) {
+        allPlayers.addAll(section!.player!);
+      }
+    }
+
+    return allPlayers.length;
+  }
+
+  double get totalPrice {
+    double total = 0;
+    for (final section in court.section) {
+      if (section == null) continue;
+      final start = section.schedule.start;
+      final end = section.schedule.end;
+
+      if (start != null && end != null) {
+        final startMin = start.hour * 60 + start.minute;
+        final endMin = end.hour * 60 + end.minute;
+        final duration = (endMin - startMin) / 60.0;
+
+        total += court.courtRate * duration;
+      }
+    }
+
+    total += court.shuttlecockPrice;
+    return total;
+  }
+
+  double get perPlayerShare {
+    if (court.isDivided && playerCount > 0) {
+      return totalPrice / playerCount;
+    }
+    return totalPrice;
+  }
 }
 
 class GameCourt {
   final String courtName;
   final double courtRate;
-  final double shottlecockPrice;
+  final double shuttlecockPrice;
   final List<CourtSection?> section;
   final bool isDivided;
 
   GameCourt({
     required this.courtName,
     required this.courtRate,
-    required this.shottlecockPrice,
+    required this.shuttlecockPrice,
     required this.section,
     required this.isDivided,
   });
@@ -35,9 +70,11 @@ class GameCourt {
 
 class CourtSection {
   final int number;
+  final List<Players>? player; //the players who join this court section
   final CourtSchedule schedule;
 
   CourtSection({
+    this.player,
     required this.number,
     required this.schedule,
   });

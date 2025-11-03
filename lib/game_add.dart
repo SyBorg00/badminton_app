@@ -2,6 +2,7 @@ import 'package:badminton_app/model/games.dart';
 import 'package:badminton_app/widgets/app_input.dart';
 import 'package:badminton_app/widgets/court_section.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GameAdd extends StatefulWidget {
   final void Function(Games game) onAddGame;
@@ -16,13 +17,33 @@ class _GameAddState extends State<GameAdd> {
   final _gameTitleController = TextEditingController();
   final _courtNameController = TextEditingController();
   final _courtRateController = TextEditingController();
-  final _shottlecockPriceController = TextEditingController();
+  final shuttlecockPriceController = TextEditingController();
   bool isDivided = true;
   List<CourtSection?> section = [];
 
+  @override
+  void initState() {
+    super.initState();
+    _loadDefaultSettings();
+  }
+
+  //for any changes in the checkbox
   void handleCheckboxChange(bool? value) {
     setState(() {
       isDivided = value ?? false;
+    });
+  }
+
+  //load default settings in the user_settings.dart
+  Future<void> _loadDefaultSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _courtNameController.text = prefs.getString('defaultCourtName') ?? '';
+      _courtRateController.text =
+          prefs.getDouble('defaultCourtRate')?.toString() ?? '';
+      shuttlecockPriceController.text =
+          prefs.getDouble('defaultShuttleCockPrice')?.toString() ?? '';
+      isDivided = prefs.getBool('divideCourtPerPlayer') ?? true;
     });
   }
 
@@ -32,6 +53,7 @@ class _GameAddState extends State<GameAdd> {
     return null;
   }
 
+  //submitting the data
   void _submitGameData() {
     //check if there are empty fields
     final isValid = _key.currentState?.validate() ?? false;
@@ -45,12 +67,10 @@ class _GameAddState extends State<GameAdd> {
         Games(
           id: DateTime.now().microsecondsSinceEpoch.toString(),
           title: _gameTitleController.text,
-          playerCount: 0,
-          total: 0,
           court: GameCourt(
             courtName: _courtNameController.text,
             courtRate: double.parse(_courtRateController.text),
-            shottlecockPrice: double.parse(_courtRateController.text),
+            shuttlecockPrice: double.parse(shuttlecockPriceController.text),
             section: section,
             isDivided: isDivided,
           ),
@@ -58,6 +78,16 @@ class _GameAddState extends State<GameAdd> {
       );
       Navigator.pop(context);
     }
+  }
+
+  //to prevent memory leak
+  @override
+  void dispose() {
+    _gameTitleController.dispose();
+    _courtNameController.dispose();
+    _courtRateController.dispose();
+    shuttlecockPriceController.dispose();
+    super.dispose();
   }
 
   @override
@@ -97,7 +127,7 @@ class _GameAddState extends State<GameAdd> {
                 type: TextInputType.number,
               ),
               AppInput(
-                controller: _shottlecockPriceController,
+                controller: shuttlecockPriceController,
                 label: 'Shuttlecock Price',
                 validator: _validateNotEmpty,
                 type: TextInputType.number,

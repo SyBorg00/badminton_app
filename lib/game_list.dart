@@ -4,8 +4,7 @@ import 'package:badminton_app/widgets/game_card.dart';
 import 'package:flutter/material.dart';
 
 class GameList extends StatefulWidget {
-  final void Function(BuildContext context)? onAddGame;
-  const GameList({super.key, this.onAddGame});
+  const GameList({super.key});
 
   @override
   State<GameList> createState() => _GameListState();
@@ -24,6 +23,8 @@ class _GameListState extends State<GameList> {
     _focus.addListener(() {
       setState(() {});
     });
+    // Ensure filtered list reflects the (initially empty) master list
+    filteredGameList = List.from(gameList);
   }
 
   List<Games> filteredGameList = [];
@@ -31,6 +32,8 @@ class _GameListState extends State<GameList> {
   void _addGame(Games games) {
     setState(() {
       gameList.add(games);
+      // Recompute filtered list so the newly added game appears immediately.
+      _onSearchGame();
     });
   }
 
@@ -90,11 +93,24 @@ class _GameListState extends State<GameList> {
   void _onSearchGame() {
     final query = _searchGameController.text.toLowerCase();
     setState(() {
-      filteredGameList = gameList.where((game) {
-        final title = game.title.toLowerCase();
-        return title.contains(query);
-      }).toList();
+      if (query.isEmpty) {
+        // no query -> show all
+        filteredGameList = List.from(gameList);
+      } else {
+        filteredGameList = gameList.where((game) {
+          final title = game.title.toLowerCase();
+          return title.contains(query);
+        }).toList();
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    _searchGameController.removeListener(_onSearchGame);
+    _searchGameController.dispose();
+    _focus.dispose();
+    super.dispose();
   }
 
   @override
@@ -171,24 +187,21 @@ class _GameListState extends State<GameList> {
       ),
       body: Center(
         child: filteredGameList.isEmpty
-            ? const Text("No games listed yet")
+            ? (gameList.isEmpty
+                  ? const Text("No games listed yet")
+                  : const Text("No matching games"))
             : ListView.builder(
                 itemCount: filteredGameList.length,
                 itemBuilder: (BuildContext context, int index) {
+                  final games = filteredGameList[index];
                   return Dismissible(
-                    key: ValueKey(filteredGameList[index]),
+                    key: ValueKey(games.id),
                     direction: DismissDirection.horizontal,
                     confirmDismiss: (direction) =>
-                        _confirmDelete(context, filteredGameList[index]),
-                    onDismissed: (_) => {
-                      setState(() {
-                        filteredGameList.removeAt(index);
-                      }),
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Game successfully deleted'),
-                        ),
-                      ),
+                        _confirmDelete(context, games),
+                    onDismissed: (_) {
+                      // Use the centralized delete so both lists are updated
+                      _deleteGame(games);
                     },
                     background: Container(
                       decoration: BoxDecoration(
@@ -212,7 +225,7 @@ class _GameListState extends State<GameList> {
                       ),
                     ),
                     child: GameCard(
-                      games: gameList[index],
+                      games: games,
                     ),
                   );
                 },

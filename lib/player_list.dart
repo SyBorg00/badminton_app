@@ -5,8 +5,7 @@ import 'package:badminton_app/player_edit.dart';
 import 'package:badminton_app/widgets/player_card.dart';
 
 class PlayerList extends StatefulWidget {
-  final void Function(BuildContext context)? onAddPlayer;
-  const PlayerList({super.key, this.onAddPlayer});
+  const PlayerList({super.key});
 
   @override
   State<PlayerList> createState() => _PlayerListState();
