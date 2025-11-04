@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'game_list.dart';
 import 'player_list.dart';
 import 'user_settings.dart';
+import 'model/games.dart';
+import 'model/players.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -12,10 +14,54 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int _currentIndex = 0;
+  final List<Games> _games = [];
+  final List<Players> _players = [];
+
+  void _handleAddGame(Games game) {
+    setState(() {
+      _games.add(game);
+    });
+  }
+
+  void _handleDeleteGame(Games game) {
+    setState(() {
+      _games.removeWhere((g) => g.id == game.id);
+    });
+  }
+
+  void _handleAddPlayer(Players player) {
+    setState(() {
+      _players.add(player);
+    });
+  }
+
+  void _handleEditPlayer(Players player) {
+    setState(() {
+      final index = _players.indexWhere((p) => p.id == player.id);
+      if (index != -1) {
+        _players[index] = player;
+      }
+    });
+  }
+
+  void _handleDeletePlayer(Players player) {
+    setState(() {
+      _players.removeWhere((p) => p.id == player.id);
+    });
+  }
 
   late final List<Widget> _pages = [
-    const GameList(),
-    const PlayerList(),
+    GameList(
+      gameList: _games,
+      onAddGame: _handleAddGame,
+      onDeleteGame: _handleDeleteGame,
+    ),
+    PlayerList(
+      playerList: _players,
+      onAddPlayer: _handleAddPlayer,
+      onEditPlayer: _handleEditPlayer,
+      onDeletePlayer: _handleDeletePlayer,
+    ),
     const UserSettings(),
   ];
 

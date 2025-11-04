@@ -4,7 +4,16 @@ import 'package:badminton_app/widgets/game_card.dart';
 import 'package:flutter/material.dart';
 
 class GameList extends StatefulWidget {
-  const GameList({super.key});
+  final List<Games> gameList;
+  final Function(Games game) onAddGame;
+  final Function(Games game) onDeleteGame;
+
+  const GameList({
+    super.key,
+    required this.gameList,
+    required this.onAddGame,
+    required this.onDeleteGame,
+  });
 
   @override
   State<GameList> createState() => _GameListState();
@@ -13,7 +22,6 @@ class GameList extends StatefulWidget {
 class _GameListState extends State<GameList> {
   late FocusNode _focus;
   final _searchGameController = TextEditingController();
-  final List<Games> gameList = [];
 
   @override
   void initState() {
@@ -23,23 +31,20 @@ class _GameListState extends State<GameList> {
     _focus.addListener(() {
       setState(() {});
     });
-    // Ensure filtered list reflects the (initially empty) master list
-    filteredGameList = List.from(gameList);
+    // Ensure filtered list reflects the initial game list
+    filteredGameList = List.from(widget.gameList);
   }
 
   List<Games> filteredGameList = [];
 
   void _addGame(Games games) {
-    setState(() {
-      gameList.add(games);
-      // Recompute filtered list so the newly added game appears immediately.
-      _onSearchGame();
-    });
+    widget.onAddGame(games);
+    _onSearchGame(); // Recompute filtered list
   }
 
   void _deleteGame(Games games) {
+    widget.onDeleteGame(games);
     setState(() {
-      gameList.removeWhere((g) => g.id == games.id);
       filteredGameList.removeWhere((g) => g.id == games.id);
     });
 
@@ -95,9 +100,9 @@ class _GameListState extends State<GameList> {
     setState(() {
       if (query.isEmpty) {
         // no query -> show all
-        filteredGameList = List.from(gameList);
+        filteredGameList = List.from(widget.gameList);
       } else {
-        filteredGameList = gameList.where((game) {
+        filteredGameList = widget.gameList.where((game) {
           final title = game.title.toLowerCase();
           return title.contains(query);
         }).toList();
@@ -123,7 +128,7 @@ class _GameListState extends State<GameList> {
           padding: EdgeInsets.only(left: 20),
           child: Text(
             "All Games",
-            style: TextStyle(fontWeight: FontWeight.w900),
+            style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
           ),
         ),
         actions: [
@@ -135,7 +140,7 @@ class _GameListState extends State<GameList> {
                 Icons.add_circle,
                 color: Color.fromARGB(255, 255, 255, 255),
               ),
-              iconSize: 40,
+              iconSize: 50,
             ),
           ),
         ],
@@ -144,20 +149,20 @@ class _GameListState extends State<GameList> {
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: SizedBox(
-              height: 50,
+              height: 40,
               child: TextField(
                 controller: _searchGameController,
                 decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
                   border: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black),
+                    borderSide: BorderSide.none,
                   ),
                   label: const Text(
                     "Search by title",
-                    style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                   ),
                   prefixIcon: const Icon(
                     Icons.search,
-                    color: Color.fromARGB(255, 20, 148, 58),
                   ),
                   focusedBorder: const OutlineInputBorder(
                     borderSide: BorderSide(
@@ -175,9 +180,14 @@ class _GameListState extends State<GameList> {
                     states,
                   ) {
                     if (states.contains(WidgetState.focused)) {
-                      return const TextStyle(color: Colors.green);
+                      return const TextStyle(
+                        color: Color.fromARGB(255, 255, 255, 255),
+                        backgroundColor: Colors.green,
+                      );
                     }
-                    return const TextStyle(color: Colors.black);
+                    return const TextStyle(
+                      color: Color.fromARGB(255, 57, 57, 57),
+                    );
                   }),
                 ),
               ),
@@ -187,7 +197,7 @@ class _GameListState extends State<GameList> {
       ),
       body: Center(
         child: filteredGameList.isEmpty
-            ? (gameList.isEmpty
+            ? (widget.gameList.isEmpty
                   ? const Text("No games listed yet")
                   : const Text("No matching games"))
             : ListView.builder(

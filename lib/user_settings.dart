@@ -50,12 +50,23 @@ class _UserSettingsState extends State<UserSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('User Settings')),
+      appBar: AppBar(
+        backgroundColor: Colors.green,
+        title: const Padding(
+          padding: EdgeInsets.only(left: 20),
+          child: Text(
+            "User Settings",
+            style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
+          ),
+        ),
+        leading: Image.asset('images/badminton_logo_white.png'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
             children: [
               AppInput(
                 controller: _defaultCourtName,
@@ -76,6 +87,9 @@ class _UserSettingsState extends State<UserSettings> {
               const SizedBox(height: 10),
               CheckboxListTile(
                 title: const Text('Divide the court equally among players?'),
+                checkboxScaleFactor: 1.5,
+                checkColor: Colors.white,
+                activeColor: Colors.green,
                 value: divideCourtPerPlayer,
                 onChanged: (bool? value) {
                   setState(() {
@@ -86,6 +100,10 @@ class _UserSettingsState extends State<UserSettings> {
 
               const SizedBox(height: 20),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                ),
                 onPressed: () async {
                   await _saveSettings();
                   if (context.mounted) {
@@ -96,6 +114,7 @@ class _UserSettingsState extends State<UserSettings> {
                     );
                   }
                 },
+
                 child: const Text('Save Settings'),
               ),
             ],

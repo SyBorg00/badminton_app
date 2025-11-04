@@ -2,6 +2,7 @@ import 'package:badminton_app/model/games.dart';
 import 'package:badminton_app/widgets/app_input.dart';
 import 'package:badminton_app/widgets/court_section.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GameAdd extends StatefulWidget {
@@ -109,43 +110,62 @@ class _GameAddState extends State<GameAdd> {
         ],
       ),
       body: Center(
-        child: Form(
-          key: _key,
-          child: ListView(
-            children: [
-              AppInput(controller: _gameTitleController, label: 'Game Title'),
-              AppInput(
-                controller: _courtNameController,
-                label: 'Game Court',
-                validator: _validateNotEmpty,
-              ),
-
-              AppInput(
-                controller: _courtRateController,
-                label: 'Court Rate',
-                validator: _validateNotEmpty,
-                type: TextInputType.number,
-              ),
-              AppInput(
-                controller: shuttlecockPriceController,
-                label: 'Shuttlecock Price',
-                validator: _validateNotEmpty,
-                type: TextInputType.number,
-              ),
-              CheckboxListTile(
-                title: const Text('Divide the court equally among players?'),
-                value: isDivided,
-                onChanged: handleCheckboxChange,
-              ),
-              CourtSectionWidget(
-                section: section,
-                onSectionChanged: (updatedSections) {
-                  setState(() {
-                    section = updatedSections;
-                  });
-                },
-              ),
-            ],
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Form(
+            key: _key,
+            child: ListView(
+              children: [
+                AppInput(
+                  controller: _gameTitleController,
+                  label: 'Game Title',
+                  prefixIcon: const Icon(Icons.title),
+                ),
+                const SizedBox(height: 30),
+                AppInput(
+                  controller: _courtNameController,
+                  label: 'Game Court',
+                  validator: _validateNotEmpty,
+                  prefixIcon: const Icon(Icons.sports),
+                ),
+                const SizedBox(height: 30),
+                AppInput(
+                  controller: _courtRateController,
+                  label: 'Court Rate',
+                  validator: _validateNotEmpty,
+                  type: TextInputType.number,
+                  inputFormatter: [FilteringTextInputFormatter.digitsOnly],
+                  prefixIcon: const Icon(Icons.rate_review),
+                ),
+                const SizedBox(height: 30),
+                AppInput(
+                  controller: shuttlecockPriceController,
+                  label: 'Shuttlecock Price',
+                  validator: _validateNotEmpty,
+                  type: TextInputType.number,
+                  inputFormatter: [FilteringTextInputFormatter.digitsOnly],
+                  prefixIcon: const Icon(Icons.price_change),
+                ),
+                const SizedBox(height: 30),
+                CheckboxListTile(
+                  title: const Text('Divide the court equally among players?'),
+                  value: isDivided,
+                  checkboxScaleFactor: 1.5,
+                  checkColor: Colors.white,
+                  activeColor: Colors.green,
+                  onChanged: handleCheckboxChange,
+                ),
+                const SizedBox(height: 30),
+                CourtSectionWidget(
+                  section: section,
+                  onSectionChanged: (updatedSections) {
+                    setState(() {
+                      section = updatedSections;
+                    });
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

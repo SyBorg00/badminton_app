@@ -172,6 +172,10 @@ class _CourtSectionWidgetState extends State<CourtSectionWidget> {
 
           Center(
             child: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+              ),
               onPressed: _addSection,
               icon: const Icon(Icons.add),
               label: const Text('Add Section'),
