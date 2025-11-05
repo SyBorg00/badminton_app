@@ -103,9 +103,10 @@ class GameView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             const Text(
-              'Court Sections',
+              'Court Schedules',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
+            const Divider(),
             const SizedBox(height: 8),
             Expanded(
               child: sections.isEmpty
