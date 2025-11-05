@@ -16,17 +16,13 @@ class CourtSectionWidget extends StatefulWidget {
 }
 
 class _CourtSectionWidgetState extends State<CourtSectionWidget> {
-  final List<TextEditingController> numberController = [];
+  // numberController removed — court numbers will be automated
   final List<CourtSchedule> schedule = [];
 
   @override
   void initState() {
     super.initState();
     final length = widget.section?.length ?? 0;
-
-    numberController.addAll(
-      List.generate(length, (_) => TextEditingController()),
-    );
 
     schedule.addAll(
       List.generate(length, (_) => CourtSchedule(start: null, end: null)),
@@ -35,32 +31,63 @@ class _CourtSectionWidgetState extends State<CourtSectionWidget> {
 
   @override
   void dispose() {
-    for (final controller in numberController) {
-      controller.dispose();
-    }
     super.dispose();
   }
 
   Future<void> _selectScheduleRange(int index) async {
     final sched = schedule[index];
 
-    final TimeOfDay? start = await showTimePicker(
+    // pick a date first
+    final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialTime: sched.start ?? TimeOfDay.now(),
+      initialDate: sched.start ?? DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
     );
-    if (start == null || !mounted) return;
+    if (pickedDate == null || !mounted) return;
 
-    final TimeOfDay? end = await showTimePicker(
+    // initial time for start
+    final TimeOfDay initialStartTime = sched.start != null
+        ? TimeOfDay.fromDateTime(sched.start!)
+        : TimeOfDay.now();
+
+    final TimeOfDay? startTime = await showTimePicker(
       context: context,
-      initialTime:
-          sched.end ??
-          TimeOfDay(hour: (start.hour + 1) % 24, minute: start.minute),
+      initialTime: initialStartTime,
     );
-    if (end == null || !mounted) return;
+    if (startTime == null || !mounted) return;
 
-    final startMin = start.hour * 60 + start.minute;
-    final endMin = end.hour * 60 + end.minute;
-    if (endMin <= startMin) {
+    // initial time for end (use existing end or start + 1 hour)
+    final TimeOfDay initialEndTime = sched.end != null
+        ? TimeOfDay.fromDateTime(sched.end!)
+        : TimeOfDay(
+            hour: (startTime.hour + 1) % 24,
+            minute: startTime.minute,
+          );
+
+    final TimeOfDay? endTime = await showTimePicker(
+      context: context,
+      initialTime: initialEndTime,
+    );
+    if (endTime == null || !mounted) return;
+
+    final startDateTime = DateTime(
+      pickedDate.year,
+      pickedDate.month,
+      pickedDate.day,
+      startTime.hour,
+      startTime.minute,
+    );
+
+    final endDateTime = DateTime(
+      pickedDate.year,
+      pickedDate.month,
+      pickedDate.day,
+      endTime.hour,
+      endTime.minute,
+    );
+
+    if (!endDateTime.isAfter(startDateTime)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('End time must be after start time')),
       );
@@ -68,7 +95,7 @@ class _CourtSectionWidgetState extends State<CourtSectionWidget> {
     }
 
     setState(() {
-      schedule[index] = CourtSchedule(start: start, end: end);
+      schedule[index] = CourtSchedule(start: startDateTime, end: endDateTime);
     });
 
     _updateParent();
@@ -76,12 +103,9 @@ class _CourtSectionWidgetState extends State<CourtSectionWidget> {
 
   void _updateParent() {
     final updatedSections = List<CourtSection?>.generate(
-      numberController.length,
+      schedule.length,
       (i) {
-        final numText = numberController[i].text;
-        final numValue = int.tryParse(numText) ?? (i + 1);
         return CourtSection(
-          number: numValue,
           schedule: schedule[i],
         );
       },
@@ -92,7 +116,6 @@ class _CourtSectionWidgetState extends State<CourtSectionWidget> {
 
   void _addSection() {
     setState(() {
-      numberController.add(TextEditingController());
       schedule.add(CourtSchedule(start: null, end: null));
     });
     _updateParent();
@@ -100,16 +123,25 @@ class _CourtSectionWidgetState extends State<CourtSectionWidget> {
 
   void _removeSection(int index) {
     setState(() {
-      numberController[index].dispose();
-      numberController.removeAt(index);
       schedule.removeAt(index);
     });
     _updateParent();
   }
 
+  String _formatDateTimeRange(CourtSchedule sched) {
+    if (sched.start == null || sched.end == null) return 'Select Time Range';
+    final start = sched.start!;
+    final end = sched.end!;
+    final startTime = TimeOfDay.fromDateTime(start).format(context);
+    final endTime = TimeOfDay.fromDateTime(end).format(context);
+    final date =
+        '${start.month.toString().padLeft(2, '0')}/${start.day.toString().padLeft(2, '0')}/${start.year}';
+    return '$date $startTime - $endTime';
+  }
+
   @override
   Widget build(BuildContext context) {
-    final hasSections = numberController.isNotEmpty;
+    final hasSections = schedule.isNotEmpty;
 
     return Center(
       child: Column(
@@ -120,34 +152,31 @@ class _CourtSectionWidgetState extends State<CourtSectionWidget> {
               padding: EdgeInsets.symmetric(vertical: 4),
               child: Row(
                 children: [
-                  Expanded(child: Text('Court Number')),
+                  SizedBox(width: 64, child: Text('Court #')),
                   SizedBox(width: 8),
-                  Expanded(child: Text('Schedule (Start - End)')),
+                  Expanded(child: Text('Schedule')),
                   SizedBox(width: 48), // space for remove button
                 ],
               ),
             ),
-
           ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: numberController.length,
+            itemCount: schedule.length,
             itemBuilder: (context, index) {
               final sched = schedule[index];
-              final scheduleText = (sched.start != null && sched.end != null)
-                  ? '${sched.start!.format(context)} - ${sched.end!.format(context)}'
-                  : 'Select Time Range';
+              final scheduleText = _formatDateTimeRange(sched);
+              final courtNumber = index + 1;
 
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4.0),
                 child: Row(
                   children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: numberController[index],
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(labelText: 'Court #'),
-                        onChanged: (_) => _updateParent(),
+                    SizedBox(
+                      width: 64,
+                      child: Text(
+                        courtNumber.toString(),
+                        style: const TextStyle(fontSize: 16),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -167,9 +196,7 @@ class _CourtSectionWidgetState extends State<CourtSectionWidget> {
               );
             },
           ),
-
           const SizedBox(height: 10),
-
           Center(
             child: ElevatedButton.icon(
               style: ElevatedButton.styleFrom(

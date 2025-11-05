@@ -5,12 +5,10 @@ class GameCard extends StatelessWidget {
   final Games games;
   const GameCard({super.key, required this.games});
 
-  String _formatTime(TimeOfDay? time) {
-    if (time == null) return "--:--";
-    final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
-    final minute = time.minute.toString().padLeft(2, '0');
-    final period = time.period == DayPeriod.am ? "AM" : "PM";
-    return "$hour:$minute $period";
+  String _formatDateTime(DateTime? dt, BuildContext context) {
+    if (dt == null) return "--:--";
+    final tod = TimeOfDay.fromDateTime(dt);
+    return tod.format(context);
   }
 
   @override
@@ -20,7 +18,7 @@ class GameCard extends StatelessWidget {
         : null;
 
     final scheduleText = firstSection != null
-        ? "${_formatTime(firstSection.schedule.start)} - ${_formatTime(firstSection.schedule.end)}"
+        ? "${_formatDateTime(firstSection.schedule.start, context)} - ${_formatDateTime(firstSection.schedule.end, context)}"
         : "---";
 
     return Card(

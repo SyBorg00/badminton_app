@@ -1,4 +1,5 @@
 import 'package:badminton_app/game_add.dart';
+import 'package:badminton_app/game_view.dart';
 import 'package:badminton_app/model/games.dart';
 import 'package:badminton_app/widgets/game_card.dart';
 import 'package:flutter/material.dart';
@@ -234,8 +235,18 @@ class _GameListState extends State<GameList> {
                         color: Color.fromARGB(255, 255, 255, 255),
                       ),
                     ),
-                    child: GameCard(
-                      games: games,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (ctx) => GameView(games: games),
+                          ),
+                        );
+                      },
+                      child: GameCard(
+                        games: games,
+                      ),
                     ),
                   );
                 },

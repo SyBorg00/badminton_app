@@ -32,10 +32,8 @@ class Games {
       final end = section.schedule.end;
 
       if (start != null && end != null) {
-        final startMin = start.hour * 60 + start.minute;
-        final endMin = end.hour * 60 + end.minute;
-        final duration = (endMin - startMin) / 60.0;
-
+        final durationInMinutes = end.difference(start).inMinutes;
+        final duration = durationInMinutes / 60.0;
         total += court.courtRate * duration;
       }
     }
@@ -69,19 +67,17 @@ class GameCourt {
 }
 
 class CourtSection {
-  final int number;
   final List<Players>? player; //the players who join this court section
   final CourtSchedule schedule;
 
   CourtSection({
     this.player,
-    required this.number,
     required this.schedule,
   });
 }
 
 class CourtSchedule {
-  final TimeOfDay? start;
-  final TimeOfDay? end;
+  final DateTime? start;
+  final DateTime? end;
   CourtSchedule({required this.start, required this.end});
 }
