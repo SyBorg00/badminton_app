@@ -155,7 +155,7 @@ class _CourtSectionWidgetState extends State<CourtSectionWidget> {
                   SizedBox(width: 64, child: Text('Court #')),
                   SizedBox(width: 8),
                   Expanded(child: Text('Schedule')),
-                  SizedBox(width: 48), // space for remove button
+                  SizedBox(width: 48),
                 ],
               ),
             ),
@@ -182,6 +182,17 @@ class _CourtSectionWidgetState extends State<CourtSectionWidget> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: const Color.fromARGB(
+                            255,
+                            55,
+                            122,
+                            48,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadiusGeometry.circular(5),
+                          ),
+                        ),
                         onPressed: () => _selectScheduleRange(index),
                         child: Text(scheduleText),
                       ),

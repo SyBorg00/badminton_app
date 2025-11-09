@@ -54,6 +54,16 @@ class _GameAddState extends State<GameAdd> {
     return null;
   }
 
+  bool _hasNoDateSchedule() {
+    for (final sect in section) {
+      final schedule = sect?.schedule;
+      if (schedule?.start == null || schedule?.end == null) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   //submitting the data
   void _submitGameData() {
     //check if there are empty fields
@@ -61,6 +71,13 @@ class _GameAddState extends State<GameAdd> {
     if (!isValid) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please fix validation errors")),
+      );
+      return;
+    } else if (_hasNoDateSchedule()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Some values in the schedule are missing"),
+        ),
       );
       return;
     } else {
@@ -81,7 +98,6 @@ class _GameAddState extends State<GameAdd> {
     }
   }
 
-  //to prevent memory leak
   @override
   void dispose() {
     _gameTitleController.dispose();
