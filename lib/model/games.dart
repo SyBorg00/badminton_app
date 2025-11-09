@@ -16,12 +16,23 @@ class Games {
     final allPlayers = <Players>{};
 
     for (final section in court.section) {
-      if (section?.player != null) {
-        allPlayers.addAll(section!.player!);
+      if (section?.players != null) {
+        allPlayers.addAll(section!.players!);
       }
     }
 
     return allPlayers.length;
+  }
+
+  List<Players> get currentPlayers {
+    List<Players> currPlayers = [];
+
+    for (final section in court.section) {
+      if (section?.players != null) {
+        currPlayers.addAll(section!.players!);
+      }
+    }
+    return currPlayers;
   }
 
   double get totalPrice {
@@ -67,11 +78,11 @@ class GameCourt {
 }
 
 class CourtSection {
-  final List<Players>? player; //the players who join this court section
+  final List<Players>? players; //the players who join this court section
   final CourtSchedule schedule;
 
   CourtSection({
-    this.player,
+    this.players,
     required this.schedule,
   });
 }

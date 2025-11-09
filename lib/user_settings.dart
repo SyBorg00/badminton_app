@@ -68,23 +68,26 @@ class _UserSettingsState extends State<UserSettings> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: [
+              const SizedBox(
+                height: 30,
+              ),
               AppInput(
                 controller: _defaultCourtName,
                 label: 'Default Court Name',
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 30),
               AppInput(
                 controller: _defaultCourtRate,
                 label: 'Default Court Rate',
                 type: TextInputType.number,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 30),
               AppInput(
                 controller: _defaultShuttleCockPrice,
                 label: 'Default Shuttlecock Price',
                 type: TextInputType.number,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 30),
               CheckboxListTile(
                 title: const Text('Divide the court equally among players?'),
                 checkboxScaleFactor: 1.5,

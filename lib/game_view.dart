@@ -16,16 +16,23 @@ class GameView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: const Text(
+          'Game Information',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
         backgroundColor: Colors.green,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              title,
+              "Game Title: ${title != '' ? title : 'Testing'}",
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
@@ -74,7 +81,7 @@ class GameView extends StatelessWidget {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        const Icon(Icons.person_2, size: 18),
+                        const Icon(Icons.sports_tennis, size: 18),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
@@ -87,7 +94,7 @@ class GameView extends StatelessWidget {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        const Icon(Icons.person_2, size: 18),
+                        const Icon(Icons.balance, size: 18),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
@@ -108,42 +115,62 @@ class GameView extends StatelessWidget {
             ),
             const Divider(),
             const SizedBox(height: 8),
-            Expanded(
-              child: sections.isEmpty
-                  ? const Text('No court sections available')
-                  : ListView.builder(
-                      itemCount: sections.length,
-                      itemBuilder: (context, index) {
-                        final s = sections[index];
-                        final sched = s?.schedule;
-                        final scheduleText =
-                            (sched?.start != null && sched?.end != null)
-                            ? '${TimeOfDay.fromDateTime(sched!.start!).format(context)} - ${TimeOfDay.fromDateTime(sched.end!).format(context)}'
-                            : 'Select Time Range';
+            if (sections.isEmpty)
+              const Text('No court sections available')
+            else
+              Column(
+                children: List.generate(sections.length, (index) {
+                  final s = sections[index];
+                  final sched = s?.schedule;
+                  final scheduleText =
+                      (sched?.start != null && sched?.end != null)
+                      ? '${TimeOfDay.fromDateTime(sched!.start!).format(context)} - ${TimeOfDay.fromDateTime(sched.end!).format(context)}'
+                      : 'Select Time Range';
 
-                        final durationText =
-                            (sched?.start != null && sched?.end != null)
-                            ? ' (${sched!.end!.difference(sched.start!).inHours} hrs)'
-                            : '';
+                  final durationText =
+                      (sched?.start != null && sched?.end != null)
+                      ? ' (${sched!.end!.difference(sched.start!).inHours} hrs)'
+                      : '';
 
-                        return Card(
-                          margin: const EdgeInsets.symmetric(vertical: 6),
-                          child: ListTile(
-                            leading: const CircleAvatar(
-                              backgroundColor: Colors.green,
-                              child: Icon(
-                                Icons.games,
-                                color: Colors.white,
-                              ),
-                            ),
-                            title: Text('Court $index'),
-                            subtitle: Text(scheduleText),
-                            trailing: Text("Total Duration: $durationText"),
-                          ),
-                        );
-                      },
+                  return Card(
+                    margin: const EdgeInsets.symmetric(vertical: 6),
+                    child: ListTile(
+                      leading: const CircleAvatar(
+                        backgroundColor: Colors.green,
+                        child: Icon(
+                          Icons.games,
+                          color: Colors.white,
+                        ),
+                      ),
+                      title: Text('Court $index'),
+                      subtitle: Text(scheduleText),
+                      trailing: Text("Total Duration: $durationText"),
                     ),
+                  );
+                }),
+              ),
+            const SizedBox(height: 40),
+            const Text(
+              'Current Players',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
+            const Divider(),
+            const SizedBox(
+              height: 30,
+            ),
+            if (games.playerCount == 0)
+              const Center(child: Text('No current players assigned'))
+            else
+              Column(
+                children: List.generate(games.playerCount, (index) {
+                  final players = games.currentPlayers;
+                  return Card(
+                    child: ListTile(
+                      title: Text(players[index].fullName),
+                    ),
+                  );
+                }),
+              ),
           ],
         ),
       ),
