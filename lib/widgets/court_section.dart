@@ -60,10 +60,11 @@ class _CourtSectionWidgetState extends State<CourtSectionWidget> {
           // replace only when local is null to avoid overwriting user changes
           if (schedule.length <= i ||
               schedule[i].start == null && schedule[i].end == null) {
-            if (schedule.length <= i)
+            if (schedule.length <= i) {
               schedule.add(incoming);
-            else
+            } else {
               schedule[i] = incoming;
+            }
           }
         }
       }

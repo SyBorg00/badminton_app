@@ -24,14 +24,15 @@ class Games {
   }
 
   List<Players> get currentPlayers {
-    List<Players> currPlayers = [];
-
+    final Map<String, Players> unique = {};
     for (final section in court.section) {
       if (section?.players != null) {
-        currPlayers.addAll(section!.players!);
+        for (final p in section!.players!) {
+          unique[p.id] = p;
+        }
       }
     }
-    return currPlayers;
+    return unique.values.toList();
   }
 
   double get totalPrice {
