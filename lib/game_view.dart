@@ -68,7 +68,7 @@ class _GameViewState extends State<GameView> {
     final perPlayerShare = widget.games.perPlayerShare;
     final playerCount = widget.games.playerCount;
 
-    //gam player add handler
+    //game player add handler
     void assignPlayerToSection(Players p, int sectionIndex) {
       setState(() {
         final old = widget.games.court.section[sectionIndex];
@@ -115,7 +115,7 @@ class _GameViewState extends State<GameView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Game Title: $headerText",
+              headerText,
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),

@@ -263,8 +263,8 @@ class _GameListState extends State<GameList> {
                           if (result == 'delete') {
                             _deleteGame(games);
                           } else if (result is Games) {
-                            widget.onEditGame(result);
-                            _editGame(games);
+                            // Apply the updated game returned from the editor
+                            _editGame(result);
                           }
                         },
                         child: GameCard(

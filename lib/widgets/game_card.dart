@@ -11,11 +11,6 @@ class GameCard extends StatelessWidget {
     return tod.format(context);
   }
 
-  String _formatDate(DateTime? dt) {
-    if (dt == null) return "---";
-    return '${dt.month.toString().padLeft(2, '0')}/${dt.day.toString().padLeft(2, '0')}/${dt.year}';
-  }
-
   @override
   Widget build(BuildContext context) {
     final firstSection = games.court.section.isNotEmpty
@@ -42,10 +37,11 @@ class GameCard extends StatelessWidget {
               padding: EdgeInsets.all(6.0),
               child: CircleAvatar(
                 backgroundColor: Colors.green,
-                radius: 25,
+                radius: 45,
                 child: Icon(
                   Icons.sports_tennis,
                   color: Colors.white,
+                  size: 40,
                 ),
               ),
             ),

@@ -85,7 +85,32 @@ class _GamePlayerAddState extends State<GamePlayerAdd> {
                     )
                     .toList(),
                 onChanged: (v) => setStateDialog(() => _selectedName = v),
-                decoration: const InputDecoration(labelText: 'Select player'),
+                decoration: InputDecoration(
+                  labelText: 'Select player',
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: Colors.grey),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: Colors.grey),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(
+                      color: Colors.green,
+                      width: 2.0,
+                    ),
+                  ),
+                  labelStyle: const TextStyle(color: Colors.black),
+                  floatingLabelStyle: const TextStyle(color: Colors.green),
+                ),
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<int>(
@@ -99,20 +124,53 @@ class _GamePlayerAddState extends State<GamePlayerAdd> {
                 }),
                 onChanged: (v) =>
                     setStateDialog(() => _selectedSectionIndex = v),
-                decoration: const InputDecoration(labelText: 'Select section'),
+                decoration: InputDecoration(
+                  labelText: 'Select section',
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: Colors.grey),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: Colors.grey),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(
+                      color: Colors.green,
+                      width: 2.0,
+                    ),
+                  ),
+                  labelStyle: const TextStyle(color: Colors.black),
+                  floatingLabelStyle: const TextStyle(color: Colors.green),
+                ),
               ),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel'),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.green),
+              ),
             ),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+              ),
               onPressed: () {
                 if ((_selectedName ?? '').trim().isEmpty ||
-                    _selectedSectionIndex == null)
+                    _selectedSectionIndex == null) {
                   return;
+                }
                 Navigator.pop(ctx, true);
               },
               child: const Text('Assign'),

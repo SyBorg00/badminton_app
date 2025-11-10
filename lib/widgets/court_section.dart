@@ -16,17 +16,59 @@ class CourtSectionWidget extends StatefulWidget {
 }
 
 class _CourtSectionWidgetState extends State<CourtSectionWidget> {
-  // numberController removed — court numbers will be automated
   final List<CourtSchedule> schedule = [];
 
   @override
   void initState() {
     super.initState();
-    final length = widget.section?.length ?? 0;
+    // Initialize local schedule list from the provided sections so existing
+    // schedule values (start/end) are preserved when editing.
+    final sections = widget.section ?? [];
+    for (final sec in sections) {
+      if (sec?.schedule != null) {
+        schedule.add(sec!.schedule);
+      } else {
+        schedule.add(CourtSchedule(start: null, end: null));
+      }
+    }
+  }
 
-    schedule.addAll(
-      List.generate(length, (_) => CourtSchedule(start: null, end: null)),
-    );
+  @override
+  void didUpdateWidget(covariant CourtSectionWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // If parent sections changed (e.g., when opening editor with existing
+    // data), refresh the local schedule list to reflect those values.
+    final oldLen = oldWidget.section?.length ?? 0;
+    final newLen = widget.section?.length ?? 0;
+    if (oldLen != newLen) {
+      schedule.clear();
+      final sections = widget.section ?? [];
+      for (final sec in sections) {
+        if (sec?.schedule != null) {
+          schedule.add(sec!.schedule);
+        } else {
+          schedule.add(CourtSchedule(start: null, end: null));
+        }
+      }
+      setState(() {});
+    } else {
+      // If lengths equal, try to sync individual schedules
+      final sections = widget.section ?? [];
+      for (var i = 0; i < sections.length; i++) {
+        final incoming = sections[i]?.schedule;
+        if (incoming != null) {
+          // replace only when local is null to avoid overwriting user changes
+          if (schedule.length <= i ||
+              schedule[i].start == null && schedule[i].end == null) {
+            if (schedule.length <= i)
+              schedule.add(incoming);
+            else
+              schedule[i] = incoming;
+          }
+        }
+      }
+      setState(() {});
+    }
   }
 
   @override
@@ -105,7 +147,12 @@ class _CourtSectionWidgetState extends State<CourtSectionWidget> {
     final updatedSections = List<CourtSection?>.generate(
       schedule.length,
       (i) {
+        // Preserve any existing players list from the original sections
+        final players = widget.section != null && widget.section!.length > i
+            ? widget.section![i]?.players
+            : null;
         return CourtSection(
+          players: players,
           schedule: schedule[i],
         );
       },
