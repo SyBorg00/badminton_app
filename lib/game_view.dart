@@ -1,3 +1,4 @@
+import 'package:badminton_app/game_edit.dart';
 import 'package:badminton_app/model/games.dart';
 import 'package:badminton_app/model/players.dart';
 import 'package:badminton_app/widgets/game_player_add.dart';
@@ -17,6 +18,26 @@ class GameView extends StatefulWidget {
 }
 
 class _GameViewState extends State<GameView> {
+  Future<void> _openEditGame() async {
+    final result = await Navigator.push<Games>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => GameEdit(
+          game: widget.games,
+          onEditGame: (_) {},
+        ),
+      ),
+    );
+
+    if (!mounted) return;
+
+    if (result == 'delete') {
+      Navigator.pop(context, 'delete');
+    } else if (result is Games) {
+      Navigator.pop(context, result);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final title = widget.games.title;
@@ -48,7 +69,7 @@ class _GameViewState extends State<GameView> {
     final playerCount = widget.games.playerCount;
 
     //gam player add handler
-    void _assignPlayerToSection(Players p, int sectionIndex) {
+    void assignPlayerToSection(Players p, int sectionIndex) {
       setState(() {
         final old = widget.games.court.section[sectionIndex];
         final schedule = old?.schedule ?? CourtSchedule(start: null, end: null);
@@ -69,6 +90,7 @@ class _GameViewState extends State<GameView> {
       );
     }
 
+    //THE UI BUILDING SECTION
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -80,6 +102,12 @@ class _GameViewState extends State<GameView> {
           ),
         ),
         backgroundColor: Colors.green,
+        actions: [
+          IconButton(
+            onPressed: _openEditGame,
+            icon: const Icon(Icons.edit),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -274,7 +302,7 @@ class _GameViewState extends State<GameView> {
                 GamePlayerAdd(
                   players: widget.players,
                   sections: widget.games.court.section,
-                  onPlayerAssigned: _assignPlayerToSection,
+                  onPlayerAssigned: assignPlayerToSection,
                 ),
               ],
             ),

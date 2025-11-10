@@ -75,7 +75,7 @@ class _GamePlayerAddState extends State<GamePlayerAdd> {
             mainAxisSize: MainAxisSize.min,
             children: [
               DropdownButtonFormField<String>(
-                value: _selectedName,
+                initialValue: _selectedName,
                 items: players
                     .map<DropdownMenuItem<String>>(
                       (p) => DropdownMenuItem<String>(
@@ -89,7 +89,7 @@ class _GamePlayerAddState extends State<GamePlayerAdd> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<int>(
-                value: _selectedSectionIndex,
+                initialValue: _selectedSectionIndex,
                 items: List.generate(sections.length, (i) {
                   final s = sections[i];
                   final label = s?.schedule.start != null

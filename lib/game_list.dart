@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 class GameList extends StatefulWidget {
   final List<Games> gameList;
   final Function(Games game) onAddGame;
+  final Function(Games game) onEditGame;
   final Function(Games game) onDeleteGame;
   final List<Players> players;
 
@@ -15,6 +16,7 @@ class GameList extends StatefulWidget {
     super.key,
     required this.gameList,
     required this.onAddGame,
+    required this.onEditGame,
     required this.onDeleteGame,
     required this.players,
   });
@@ -43,6 +45,11 @@ class _GameListState extends State<GameList> {
 
   void _addGame(Games games) {
     widget.onAddGame(games);
+    _onSearchGame(); // Recompute filtered list
+  }
+
+  void _editGame(Games games) {
+    widget.onEditGame(games);
     _onSearchGame(); // Recompute filtered list
   }
 
@@ -208,48 +215,61 @@ class _GameListState extends State<GameList> {
                 itemCount: filteredGameList.length,
                 itemBuilder: (BuildContext context, int index) {
                   final games = filteredGameList[index];
-                  return Dismissible(
-                    key: ValueKey(games.id),
-                    direction: DismissDirection.horizontal,
-                    confirmDismiss: (direction) =>
-                        _confirmDelete(context, games),
-                    onDismissed: (_) {
-                      // Use the centralized delete so both lists are updated
-                      _deleteGame(games);
-                    },
-                    background: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: const Icon(Icons.delete, color: Colors.white),
-                    ),
-                    secondaryBackground: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      alignment: Alignment.centerRight,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: const Icon(
-                        Icons.delete,
-                        color: Color.fromARGB(255, 255, 255, 255),
-                      ),
-                    ),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (ctx) =>
-                                GameView(games: games, players: widget.players),
-                          ),
-                        );
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                    child: Dismissible(
+                      key: ValueKey(games.id),
+                      direction: DismissDirection.horizontal,
+                      confirmDismiss: (direction) =>
+                          _confirmDelete(context, games),
+                      onDismissed: (_) {
+                        _deleteGame(games);
                       },
-                      child: GameCard(
-                        games: games,
+                      background: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: const Icon(Icons.delete, color: Colors.white),
+                      ),
+                      secondaryBackground: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: const Icon(
+                          Icons.delete,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                        ),
+                      ),
+                      child: InkWell(
+                        onTap: () async {
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (ctx) => GameView(
+                                games: games,
+                                players: widget.players,
+                              ),
+                            ),
+                          );
+
+                          if (!mounted) return;
+
+                          if (result == 'delete') {
+                            _deleteGame(games);
+                          } else if (result is Games) {
+                            widget.onEditGame(result);
+                            _editGame(games);
+                          }
+                        },
+                        child: GameCard(
+                          games: games,
+                        ),
                       ),
                     ),
                   );

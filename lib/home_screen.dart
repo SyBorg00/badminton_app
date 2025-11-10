@@ -23,6 +23,15 @@ class _HomeState extends State<Home> {
     });
   }
 
+  void _handleEditGame(Games game) {
+    setState(() {
+      final index = _games.indexWhere((g) => g.id == game.id);
+      if (index != -1) {
+        _games[index] = game;
+      }
+    });
+  }
+
   void _handleDeleteGame(Games game) {
     setState(() {
       _games.removeWhere((g) => g.id == game.id);
@@ -55,6 +64,7 @@ class _HomeState extends State<Home> {
       gameList: _games,
       players: _players,
       onAddGame: _handleAddGame,
+      onEditGame: _handleEditGame,
       onDeleteGame: _handleDeleteGame,
     ),
     PlayerList(
