@@ -11,6 +11,11 @@ class GameCard extends StatelessWidget {
     return tod.format(context);
   }
 
+  String _formatDate(DateTime? dt) {
+    if (dt == null) return "---";
+    return '${dt.month.toString().padLeft(2, '0')}/${dt.day.toString().padLeft(2, '0')}/${dt.year}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final firstSection = games.court.section.isNotEmpty
@@ -53,7 +58,7 @@ class GameCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Text(
-                      games.title.isNotEmpty ? games.title : "Untitled Game",
+                      games.title.isNotEmpty ? games.title : scheduleText,
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w900,

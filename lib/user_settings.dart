@@ -29,7 +29,7 @@ class _UserSettingsState extends State<UserSettings> {
           prefs.getDouble('defaultCourtRate')?.toString() ?? '';
       _defaultShuttleCockPrice.text =
           prefs.getDouble('defaultShuttleCockPrice')?.toString() ?? '';
-      divideCourtPerPlayer = prefs.getBool('divideCourtPerPlayer') ?? true;
+      divideCourtPerPlayer = prefs.getBool('divideCourtPerPlayer') ?? false;
     });
   }
 

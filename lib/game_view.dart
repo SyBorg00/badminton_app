@@ -14,6 +14,22 @@ class GameView extends StatelessWidget {
     final isDivided = games.court.isDivided;
     final sections = games.court.section;
 
+    String headerText;
+    if (title.trim().isEmpty) {
+      String dateText = 'No schedule';
+      if (sections.isNotEmpty) {
+        final firstSched = sections.first?.schedule;
+        final start = firstSched?.start;
+        if (start != null) {
+          dateText =
+              '${start.month.toString().padLeft(2, '0')}/${start.day.toString().padLeft(2, '0')}/${start.year}';
+        }
+      }
+      headerText = dateText;
+    } else {
+      headerText = 'Game Title: $title';
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -32,7 +48,7 @@ class GameView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Game Title: ${title != '' ? title : 'Testing'}",
+              "Game Title: $headerText",
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
