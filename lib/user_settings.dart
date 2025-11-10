@@ -1,5 +1,6 @@
 import 'package:badminton_app/widgets/app_input.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserSettings extends StatefulWidget {
@@ -80,12 +81,14 @@ class _UserSettingsState extends State<UserSettings> {
                 controller: _defaultCourtRate,
                 label: 'Default Court Rate',
                 type: TextInputType.number,
+                inputFormatter: [FilteringTextInputFormatter.digitsOnly],
               ),
               const SizedBox(height: 30),
               AppInput(
                 controller: _defaultShuttleCockPrice,
                 label: 'Default Shuttlecock Price',
                 type: TextInputType.number,
+                inputFormatter: [FilteringTextInputFormatter.digitsOnly],
               ),
               const SizedBox(height: 30),
               CheckboxListTile(
