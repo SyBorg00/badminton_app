@@ -1,6 +1,7 @@
 import 'package:badminton_app/game_add.dart';
 import 'package:badminton_app/game_view.dart';
 import 'package:badminton_app/model/games.dart';
+import 'package:badminton_app/model/players.dart';
 import 'package:badminton_app/widgets/game_card.dart';
 import 'package:flutter/material.dart';
 
@@ -8,12 +9,14 @@ class GameList extends StatefulWidget {
   final List<Games> gameList;
   final Function(Games game) onAddGame;
   final Function(Games game) onDeleteGame;
+  final List<Players> players;
 
   const GameList({
     super.key,
     required this.gameList,
     required this.onAddGame,
     required this.onDeleteGame,
+    required this.players,
   });
 
   @override
@@ -240,7 +243,8 @@ class _GameListState extends State<GameList> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (ctx) => GameView(games: games),
+                            builder: (ctx) =>
+                                GameView(games: games, players: widget.players),
                           ),
                         );
                       },

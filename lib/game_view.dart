@@ -1,18 +1,30 @@
 import 'package:badminton_app/model/games.dart';
+import 'package:badminton_app/model/players.dart';
+import 'package:badminton_app/widgets/game_player_add.dart';
 import 'package:flutter/material.dart';
 
-class GameView extends StatelessWidget {
+class GameView extends StatefulWidget {
   final Games games;
-  const GameView({super.key, required this.games});
+  final List<Players> players;
+  const GameView({
+    super.key,
+    required this.games,
+    required this.players,
+  });
 
   @override
+  State<GameView> createState() => _GameViewState();
+}
+
+class _GameViewState extends State<GameView> {
+  @override
   Widget build(BuildContext context) {
-    final title = games.title;
-    final courtName = games.court.courtName;
-    final rate = games.court.courtRate;
-    final shuttlecockPrice = games.court.shuttlecockPrice;
-    final isDivided = games.court.isDivided;
-    final sections = games.court.section;
+    final title = widget.games.title;
+    final courtName = widget.games.court.courtName;
+    final rate = widget.games.court.courtRate;
+    final shuttlecockPrice = widget.games.court.shuttlecockPrice;
+    final isDivided = widget.games.court.isDivided;
+    final sections = widget.games.court.section;
 
     String headerText;
     if (title.trim().isEmpty) {
@@ -28,6 +40,33 @@ class GameView extends StatelessWidget {
       headerText = dateText;
     } else {
       headerText = 'Game Title: $title';
+    }
+
+    //price computation variables
+    final totalPrice = widget.games.totalPrice;
+    final perPlayerShare = widget.games.perPlayerShare;
+    final playerCount = widget.games.playerCount;
+
+    //gam player add handler
+    void _assignPlayerToSection(Players p, int sectionIndex) {
+      setState(() {
+        final old = widget.games.court.section[sectionIndex];
+        final schedule = old?.schedule ?? CourtSchedule(start: null, end: null);
+        final existingPlayers = (old?.players != null)
+            ? List<Players>.from(old!.players!)
+            : <Players>[];
+        existingPlayers.add(p);
+        final updatedSection = CourtSection(
+          players: existingPlayers,
+          schedule: schedule,
+        );
+        widget.games.court.section[sectionIndex] = updatedSection;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${p.fullName} assigned to Court ${sectionIndex + 1}'),
+        ),
+      );
     }
 
     return Scaffold(
@@ -73,7 +112,12 @@ class GameView extends StatelessWidget {
                     const Divider(),
                     Row(
                       children: [
-                        const Icon(Icons.location_on, size: 18),
+                        const CircleAvatar(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                          radius: 18,
+                          child: Icon(Icons.location_on, size: 18),
+                        ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
@@ -86,10 +130,15 @@ class GameView extends StatelessWidget {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        const Icon(Icons.monetization_on, size: 18),
+                        const CircleAvatar(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                          radius: 18,
+                          child: Icon(Icons.monetization_on, size: 18),
+                        ),
                         const SizedBox(width: 8),
                         Text(
-                          'Court Rate: ₱ $rate/hour',
+                          'Court Rate: ₱ ${rate.toStringAsFixed(2)}/hour',
                           style: const TextStyle(fontSize: 16),
                         ),
                       ],
@@ -97,11 +146,16 @@ class GameView extends StatelessWidget {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        const Icon(Icons.sports_tennis, size: 18),
+                        const CircleAvatar(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                          radius: 18,
+                          child: Icon(Icons.sports_tennis, size: 18),
+                        ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            'Shuttlecock Price: ₱ $shuttlecockPrice',
+                            'Shuttlecock Price: ₱ ${shuttlecockPrice.toStringAsFixed(2)}',
                             style: const TextStyle(fontSize: 16),
                           ),
                         ),
@@ -110,7 +164,12 @@ class GameView extends StatelessWidget {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        const Icon(Icons.balance, size: 18),
+                        const CircleAvatar(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                          radius: 18,
+                          child: Icon(Icons.balance, size: 18),
+                        ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
@@ -119,6 +178,45 @@ class GameView extends StatelessWidget {
                           ),
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 16),
+                    //pricing summary
+                    SizedBox(
+                      width: double.infinity,
+                      child: Card(
+                        elevation: 1,
+                        color: Colors.grey[200],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Total Price: ₱${totalPrice.toStringAsFixed(2)}',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                isDivided
+                                    ? 'Per Player Share ($playerCount players): ₱${perPlayerShare.toStringAsFixed(2)}'
+                                    : 'Individual Payment',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -166,27 +264,31 @@ class GameView extends StatelessWidget {
                 }),
               ),
             const SizedBox(height: 40),
-            const Text(
-              'Current Players',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Current players in game: ',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                ),
+                GamePlayerAdd(
+                  players: widget.players,
+                  sections: widget.games.court.section,
+                  onPlayerAssigned: _assignPlayerToSection,
+                ),
+              ],
             ),
-            const Divider(),
-            const SizedBox(
-              height: 30,
+            const SizedBox(height: 8),
+            Column(
+              children: widget.games.currentPlayers.map((p) {
+                return Card(
+                  child: ListTile(
+                    title: Text(p.fullName),
+                    subtitle: const Text('Assigned to a section'),
+                  ),
+                );
+              }).toList(),
             ),
-            if (games.playerCount == 0)
-              const Center(child: Text('No current players assigned'))
-            else
-              Column(
-                children: List.generate(games.playerCount, (index) {
-                  final players = games.currentPlayers;
-                  return Card(
-                    child: ListTile(
-                      title: Text(players[index].fullName),
-                    ),
-                  );
-                }),
-              ),
           ],
         ),
       ),

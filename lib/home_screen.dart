@@ -53,6 +53,7 @@ class _HomeState extends State<Home> {
   late final List<Widget> _pages = [
     GameList(
       gameList: _games,
+      players: _players,
       onAddGame: _handleAddGame,
       onDeleteGame: _handleDeleteGame,
     ),
