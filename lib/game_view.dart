@@ -157,7 +157,7 @@ class _GameViewState extends State<GameView> {
               ),
               margin: const EdgeInsets.symmetric(vertical: 6),
               child: Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -338,15 +338,39 @@ class _GameViewState extends State<GameView> {
                                 ),
                               ),
                               const SizedBox(height: 8),
-                              Text(
-                                isDivided
-                                    ? 'Each player pays a shared amount of ₱${perPlayerShare.toStringAsFixed(2)} for court and shuttlecock fees'
-                                    : 'Each player pays their own court and shuttlecock fees',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.blueGrey,
+                              Text.rich(
+                                TextSpan(
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.blueGrey,
+                                  ),
+                                  children: isDivided
+                                      ? <InlineSpan>[
+                                          const TextSpan(
+                                            text:
+                                                'Each player pays a shared amount of ',
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                '₱${perPlayerShare.toStringAsFixed(2)}',
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.green,
+                                            ),
+                                          ),
+                                          const TextSpan(
+                                            text:
+                                                ' for court and shuttlecock fees',
+                                          ),
+                                        ]
+                                      : <InlineSpan>[
+                                          const TextSpan(
+                                            text:
+                                                'Each player pays the full amount for court and shuttlecock fees',
+                                          ),
+                                        ],
                                 ),
+                                textAlign: TextAlign.center,
                               ),
                             ],
                           ),
