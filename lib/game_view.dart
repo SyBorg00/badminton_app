@@ -60,13 +60,12 @@ class _GameViewState extends State<GameView> {
       }
       headerText = dateText;
     } else {
-      headerText = 'Game Title: $title';
+      headerText = title;
     }
 
     //price computation variables
     final totalPrice = widget.games.totalPrice;
     final perPlayerShare = widget.games.perPlayerShare;
-    final playerCount = widget.games.playerCount;
 
     //game player add handler
     void assignPlayerToSection(Players p, int sectionIndex) {
@@ -178,16 +177,29 @@ class _GameViewState extends State<GameView> {
                           radius: 18,
                           child: Icon(Icons.location_on, size: 18),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 14),
+
                         Expanded(
-                          child: Text(
-                            'Court Name: $courtName',
-                            style: const TextStyle(fontSize: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                'Court Name:',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              Text(
+                                courtName,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.green[800],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 16),
                     Row(
                       children: [
                         const CircleAvatar(
@@ -196,10 +208,24 @@ class _GameViewState extends State<GameView> {
                           radius: 18,
                           child: Icon(Icons.monetization_on, size: 18),
                         ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Court Rate: ₱ ${rate.toStringAsFixed(2)}/hour',
-                          style: const TextStyle(fontSize: 16),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                'Court Rate:',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              Text(
+                                ' ₱ ${rate.toStringAsFixed(2)}/hour',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.green[800],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -212,11 +238,23 @@ class _GameViewState extends State<GameView> {
                           radius: 18,
                           child: Icon(Icons.sports_tennis, size: 18),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 16),
                         Expanded(
-                          child: Text(
-                            'Shuttlecock Price: ₱ ${shuttlecockPrice.toStringAsFixed(2)}',
-                            style: const TextStyle(fontSize: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                'Shuttlecock Price:',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              Text(
+                                ' ₱ ${shuttlecockPrice.toStringAsFixed(2)}',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.green[800],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -230,11 +268,46 @@ class _GameViewState extends State<GameView> {
                           radius: 18,
                           child: Icon(Icons.balance, size: 18),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 16),
                         Expanded(
-                          child: Text(
-                            'Divide Equally: $isDivided',
-                            style: const TextStyle(fontSize: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                'Divide Court Equally:',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              Text(
+                                isDivided ? "Yes" : "No",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.green[800],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    const Divider(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "TOTAL PRICE: ",
+                          style: TextStyle(
+                            color: Colors.green,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 20,
+                          ),
+                        ),
+                        Text(
+                          '₱ ${totalPrice.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            color: Colors.green,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 20,
                           ),
                         ),
                       ],
@@ -252,25 +325,27 @@ class _GameViewState extends State<GameView> {
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                'Total Price: ₱${totalPrice.toStringAsFixed(2)}',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green,
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-                              Text(
                                 isDivided
-                                    ? 'Per Player Share ($playerCount players): ₱${perPlayerShare.toStringAsFixed(2)}'
+                                    ? 'Shared Payment per Player'
                                     : 'Individual Payment',
                                 style: const TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.blue,
+                                  color: Color.fromARGB(255, 77, 136, 81),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                isDivided
+                                    ? 'Each player pays a shared amount of ₱${perPlayerShare.toStringAsFixed(2)} for court and shuttlecock fees'
+                                    : 'Each player pays their own court and shuttlecock fees',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.blueGrey,
                                 ),
                               ),
                             ],
@@ -299,7 +374,7 @@ class _GameViewState extends State<GameView> {
                       ),
                     ),
                     const Divider(),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 4),
                     if (sections.isEmpty)
                       const Text('No court sections available')
                     else
@@ -335,7 +410,13 @@ class _GameViewState extends State<GameView> {
                                         color: Colors.white,
                                       ),
                                     ),
-                                    title: Text('Court ${index + 1}'),
+                                    title: Text(
+                                      'Court ${index + 1}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.green,
+                                      ),
+                                    ),
                                     subtitle: Text(scheduleText),
                                     trailing: Text(
                                       "Total Duration: $durationText",
@@ -459,8 +540,8 @@ class _GameViewState extends State<GameView> {
                           final subtitleText = assigned.isEmpty
                               ? 'Not assigned'
                               : (assigned.length == 1
-                                    ? 'Assigned to court ${assigned.first}'
-                                    : 'Assigned to courts ${assigned.join(', ')}');
+                                    ? 'Assigned to Court ${assigned.first}'
+                                    : 'Assigned to Courts ${assigned.join(', ')}');
 
                           return Card(
                             child: ListTile(
@@ -473,7 +554,13 @@ class _GameViewState extends State<GameView> {
                                   style: const TextStyle(color: Colors.white),
                                 ),
                               ),
-                              title: Text(label),
+                              title: Text(
+                                label,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green,
+                                ),
+                              ),
                               subtitle: Text(subtitleText),
                             ),
                           );
