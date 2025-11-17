@@ -147,7 +147,7 @@ class _GameAddState extends State<GameAdd> {
                 const SizedBox(height: 30),
                 AppInput(
                   controller: _courtRateController,
-                  label: 'Court Rate',
+                  label: 'Court Rate (₱)',
                   validator: _validateNotEmpty,
                   type: TextInputType.number,
                   inputFormatter: [FilteringTextInputFormatter.digitsOnly],
@@ -156,7 +156,7 @@ class _GameAddState extends State<GameAdd> {
                 const SizedBox(height: 30),
                 AppInput(
                   controller: shuttlecockPriceController,
-                  label: 'Shuttlecock Price',
+                  label: 'Shuttlecock Price (₱)',
                   validator: _validateNotEmpty,
                   type: TextInputType.number,
                   inputFormatter: [FilteringTextInputFormatter.digitsOnly],
