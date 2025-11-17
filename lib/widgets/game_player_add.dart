@@ -117,9 +117,13 @@ class _GamePlayerAddState extends State<GamePlayerAdd> {
                 initialValue: _selectedSectionIndex,
                 items: List.generate(sections.length, (i) {
                   final s = sections[i];
-                  final label = s?.schedule.start != null
-                      ? 'Court ${i + 1} — ${s!.schedule.start!.month.toString().padLeft(2, '0')}/${s.schedule.start!.day.toString().padLeft(2, '0')}/${s.schedule.start!.year}'
-                      : 'Court ${i + 1}';
+                  final dateLabel = s?.schedule.start != null
+                      ? ' — ${s!.schedule.start!.month.toString().padLeft(2, '0')}/${s.schedule.start!.day.toString().padLeft(2, '0')}/${s.schedule.start!.year}'
+                      : '';
+                  final playersCount = s?.players?.length ?? 0;
+                  final fullBadge = playersCount >= 4 ? ' (full)' : '';
+                  final label =
+                      'Court ${i + 1}$dateLabel — $playersCount/4$fullBadge';
                   return DropdownMenuItem<int>(value: i, child: Text(label));
                 }),
                 onChanged: (v) =>

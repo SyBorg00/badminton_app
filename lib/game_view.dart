@@ -75,6 +75,26 @@ class _GameViewState extends State<GameView> {
         final existingPlayers = (old?.players != null)
             ? List<Players>.from(old!.players!)
             : <Players>[];
+        // Prevent duplicates
+        if (existingPlayers.any((pl) => pl.id == p.id)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Player already assigned to this section'),
+            ),
+          );
+          return;
+        }
+
+        // Enforce max of 4 players per section
+        if (existingPlayers.length >= 4) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Section already has maximum of 4 players'),
+            ),
+          );
+          return;
+        }
+
         existingPlayers.add(p);
         final updatedSection = CourtSection(
           players: existingPlayers,
@@ -416,6 +436,10 @@ class _GameViewState extends State<GameView> {
                               ? ' (${sched!.end!.difference(sched.start!).inHours} hrs)'
                               : '';
 
+                          // compute assigned players for display and counts
+                          final playersInSection = s?.players ?? <Players>[];
+                          final assignedCount = playersInSection.length;
+
                           return Card(
                             margin: const EdgeInsets.symmetric(vertical: 6),
                             child: Padding(
@@ -434,16 +458,43 @@ class _GameViewState extends State<GameView> {
                                         color: Colors.white,
                                       ),
                                     ),
-                                    title: Text(
-                                      'Court ${index + 1}',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.green,
-                                      ),
+                                    title: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Court ${index + 1}',
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.green,
+                                          ),
+                                        ),
+                                        Chip(
+                                          label: Text('$assignedCount / 4'),
+                                          backgroundColor: assignedCount >= 4
+                                              ? Colors.red.shade100
+                                              : Colors.green.shade50,
+                                        ),
+                                      ],
                                     ),
                                     subtitle: Text(scheduleText),
-                                    trailing: Text(
-                                      "Total Duration: $durationText",
+                                    trailing: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Text("Total Duration: $durationText"),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          assignedCount == 0
+                                              ? 'No players'
+                                              : '$assignedCount players',
+                                          style: TextStyle(
+                                            color: Colors.grey[700],
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   const SizedBox(height: 6),
@@ -526,7 +577,7 @@ class _GameViewState extends State<GameView> {
                       children: [
                         const Text(
                           'Current Players',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                           ),
@@ -590,6 +641,18 @@ class _GameViewState extends State<GameView> {
                           );
                         }).toList(),
                       ),
+                    const SizedBox(height: 8),
+                    // bottom-right player count
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Chip(
+                        label: Text(
+                          '${widget.games.currentPlayers.length} player${widget.games.currentPlayers.length == 1 ? '' : 's'}',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        backgroundColor: Colors.green.shade50,
+                      ),
+                    ),
                   ],
                 ),
               ),
