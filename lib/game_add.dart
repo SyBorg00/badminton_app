@@ -116,7 +116,7 @@ class _GameAddState extends State<GameAdd> {
           TextButton(
             onPressed: _submitGameData,
             child: const Text(
-              "Add",
+              "SAVE",
               style: TextStyle(fontSize: 16, color: Colors.green),
             ),
           ),
