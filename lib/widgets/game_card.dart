@@ -77,7 +77,7 @@ class GameCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      "Total Price: ₱${games.totalPrice.toStringAsFixed(2)}",
+                      "Total Cost: ₱${games.totalPrice.toStringAsFixed(2)}",
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

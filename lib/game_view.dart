@@ -363,7 +363,7 @@ class _GameViewState extends State<GameView> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
-                          "TOTAL PRICE: ",
+                          "TOTAL COST: ",
                           style: TextStyle(
                             color: Colors.green,
                             fontWeight: FontWeight.w900,
