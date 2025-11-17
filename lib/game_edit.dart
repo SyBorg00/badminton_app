@@ -146,6 +146,11 @@ class _GameEditState extends State<GameEdit> {
           const SizedBox(
             width: 20,
           ),
+          if (widget.game != null)
+            IconButton(
+              icon: const Icon(Icons.delete, color: Colors.red),
+              onPressed: _confirmDelete,
+            ),
         ],
       ),
       body: Center(
