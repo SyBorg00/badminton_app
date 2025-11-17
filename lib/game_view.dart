@@ -81,52 +81,68 @@ class _GameViewState extends State<GameView> {
 
     //game player add handler
     void assignPlayerToSection(Players p, int sectionIndex) {
-      setState(() {
-        final old = widget.games.court.section[sectionIndex];
-        final schedule = old?.schedule ?? CourtSchedule(start: null, end: null);
-        final existingPlayers = (old?.players != null)
-            ? List<Players>.from(old!.players!)
-            : <Players>[];
-        // Prevent duplicates
-        if (existingPlayers.any((pl) => pl.id == p.id)) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Player already assigned to this section'),
-            ),
-          );
-          return;
-        }
+      final old = widget.games.court.section[sectionIndex];
+      final schedule = old?.schedule ?? CourtSchedule(start: null, end: null);
+      final existingPlayers = (old?.players != null)
+          ? List<Players>.from(old!.players!)
+          : <Players>[];
 
-        // Check for schedule overlaps with other sections
-        for (var i = 0; i < widget.games.court.section.length; i++) {
-          if (i == sectionIndex) continue; // skip current section
-          final otherSection = widget.games.court.section[i];
-          if (otherSection?.players != null &&
-              otherSection!.players!.any((pl) => pl.id == p.id)) {
-            // Player is already in another section, check for overlap
-            if (scheduleOverlaps(schedule, otherSection.schedule)) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    '${p.fullName} is already assigned to Court ${i + 1} with an overlapping schedule',
-                  ),
+      // Prevent duplicates in the same section (check id, fullName, and nickName)
+      if (existingPlayers.any(
+        (pl) =>
+            pl.id == p.id ||
+            pl.fullName == p.fullName ||
+            (pl.nickName.trim().isNotEmpty &&
+                p.nickName.trim().isNotEmpty &&
+                pl.nickName == p.nickName),
+      )) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Player already assigned to this section'),
+          ),
+        );
+        return;
+      }
+
+      // Check for schedule overlaps with other sections
+      for (var i = 0; i < widget.games.court.section.length; i++) {
+        if (i == sectionIndex) continue; // skip current section
+        final otherSection = widget.games.court.section[i];
+        if (otherSection?.players != null &&
+            otherSection!.players!.any(
+              (pl) =>
+                  pl.id == p.id ||
+                  pl.fullName == p.fullName ||
+                  (pl.nickName.trim().isNotEmpty &&
+                      p.nickName.trim().isNotEmpty &&
+                      pl.nickName == p.nickName),
+            )) {
+          // Player is already in another section, check for overlap
+          if (scheduleOverlaps(schedule, otherSection.schedule)) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  '${p.fullName} is already assigned to Court ${i + 1} with an overlapping schedule',
                 ),
-              );
-              return;
-            }
+              ),
+            );
+            return;
           }
         }
+      }
 
-        // Enforce max of 4 players per section
-        if (existingPlayers.length >= 4) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Section already has maximum of 4 players'),
-            ),
-          );
-          return;
-        }
+      // Enforce max of 4 players per section
+      if (existingPlayers.length >= 4) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Section already has maximum of 4 players'),
+          ),
+        );
+        return;
+      }
 
+      // All checks passed, now update state
+      setState(() {
         existingPlayers.add(p);
         final updatedSection = CourtSection(
           players: existingPlayers,
@@ -640,7 +656,14 @@ class _GameViewState extends State<GameView> {
                           ) {
                             final s = widget.games.court.section[i];
                             if (s?.players != null &&
-                                s!.players!.any((pl) => pl.id == p.id)) {
+                                s!.players!.any(
+                                  (pl) =>
+                                      pl.id == p.id ||
+                                      pl.fullName == p.fullName ||
+                                      (pl.nickName.trim().isNotEmpty &&
+                                          p.nickName.trim().isNotEmpty &&
+                                          pl.nickName == p.nickName),
+                                )) {
                               assigned.add(i + 1);
                             }
                           }

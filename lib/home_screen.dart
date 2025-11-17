@@ -17,7 +17,7 @@ class _HomeState extends State<Home> {
   final List<Games> _games = [];
   final List<Players> _players = [
     Players(
-      id: DateTime.now().microsecondsSinceEpoch.toString(),
+      id: '1',
       nickName: 'Billy',
       fullName: 'Billy Bob',
       mobileNumber: '1234567890',
@@ -30,7 +30,7 @@ class _HomeState extends State<Home> {
       ),
     ),
     Players(
-      id: DateTime.now().microsecondsSinceEpoch.toString(),
+      id: '2',
       nickName: 'Ellie',
       fullName: 'Ellie Smith',
       mobileNumber: '0987654321',
@@ -43,7 +43,7 @@ class _HomeState extends State<Home> {
       ),
     ),
     Players(
-      id: DateTime.now().microsecondsSinceEpoch.toString(),
+      id: '3',
       nickName: 'Charles',
       fullName: 'Charles Brown',
       mobileNumber: '1234567890',
@@ -56,7 +56,7 @@ class _HomeState extends State<Home> {
       ),
     ),
     Players(
-      id: DateTime.now().microsecondsSinceEpoch.toString(),
+      id: '4',
       nickName: 'Henry',
       fullName: 'Henry Ford',
       mobileNumber: '1234567890',

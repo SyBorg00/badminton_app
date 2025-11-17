@@ -12,15 +12,16 @@ class Games {
   });
 
   int get playerCount {
-    final allPlayers = <Players>{};
-
+    final seen = <String>{};
     for (final section in court.section) {
       if (section?.players != null) {
-        allPlayers.addAll(section!.players!);
+        for (final p in section!.players!) {
+          final key = '${p.id}|${p.fullName}|${p.nickName}';
+          seen.add(key);
+        }
       }
     }
-
-    return allPlayers.length;
+    return seen.length;
   }
 
   List<Players> get currentPlayers {
@@ -28,7 +29,8 @@ class Games {
     for (final section in court.section) {
       if (section?.players != null) {
         for (final p in section!.players!) {
-          unique[p.id] = p;
+          final key = '${p.id}|${p.fullName}|${p.nickName}';
+          unique[key] = p;
         }
       }
     }

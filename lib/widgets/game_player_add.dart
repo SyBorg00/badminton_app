@@ -20,8 +20,8 @@ class GamePlayerAdd extends StatefulWidget {
 }
 
 class _GamePlayerAddState extends State<GamePlayerAdd> {
-  String? _selectedName;
-  int? _selectedSectionIndex;
+  late String _selectedName;
+  late int _selectedSectionIndex;
 
   // Helper: check if two time ranges overlap
   bool _scheduleOverlaps(CourtSchedule? sched1, CourtSchedule? sched2) {
@@ -96,7 +96,11 @@ class _GamePlayerAddState extends State<GamePlayerAdd> {
                       ),
                     )
                     .toList(),
-                onChanged: (v) => setStateDialog(() => _selectedName = v),
+                onChanged: (v) {
+                  if (v != null) {
+                    setStateDialog(() => _selectedName = v);
+                  }
+                },
                 decoration: InputDecoration(
                   labelText: 'Select player',
                   filled: true,
@@ -137,15 +141,21 @@ class _GamePlayerAddState extends State<GamePlayerAdd> {
 
                   // Check if selected player has overlapping schedule with this section
                   bool hasOverlap = false;
-                  if (_selectedName != null) {
+                  if (_selectedName.isNotEmpty) {
                     try {
-                      final selectedPlayer = widget.players.firstWhere(
+                      final selectedPlayer = players.firstWhere(
                         (p) => p.fullName == _selectedName,
-                        orElse: () => throw Exception('Not found'),
                       );
-                      // Check if player is already assigned to this section
+                      // Check if player is already assigned to this section (by id, fullName, or nickName)
                       if (s?.players != null &&
-                          s!.players!.any((p) => p.id == selectedPlayer.id)) {
+                          s!.players!.any(
+                            (p) =>
+                                p.id == selectedPlayer.id ||
+                                p.fullName == selectedPlayer.fullName ||
+                                (p.nickName.trim().isNotEmpty &&
+                                    selectedPlayer.nickName.trim().isNotEmpty &&
+                                    p.nickName == selectedPlayer.nickName),
+                          )) {
                         hasOverlap = true; // already assigned
                       } else {
                         // Check for overlaps with other sections
@@ -154,7 +164,14 @@ class _GamePlayerAddState extends State<GamePlayerAdd> {
                           final otherSect = sections[j];
                           if (otherSect?.players != null &&
                               otherSect!.players!.any(
-                                (p) => p.id == selectedPlayer.id,
+                                (p) =>
+                                    p.id == selectedPlayer.id ||
+                                    p.fullName == selectedPlayer.fullName ||
+                                    (p.nickName.trim().isNotEmpty &&
+                                        selectedPlayer.nickName
+                                            .trim()
+                                            .isNotEmpty &&
+                                        p.nickName == selectedPlayer.nickName),
                               )) {
                             // Player in other section, check schedule overlap
                             if (_scheduleOverlaps(
@@ -177,8 +194,11 @@ class _GamePlayerAddState extends State<GamePlayerAdd> {
                       'Court ${i + 1}$dateLabel — $playersCount/4$fullBadge$overlapBadge';
                   return DropdownMenuItem<int>(value: i, child: Text(label));
                 }),
-                onChanged: (v) =>
-                    setStateDialog(() => _selectedSectionIndex = v),
+                onChanged: (v) {
+                  if (v != null) {
+                    setStateDialog(() => _selectedSectionIndex = v);
+                  }
+                },
                 decoration: InputDecoration(
                   labelText: 'Select section',
                   filled: true,
@@ -222,8 +242,7 @@ class _GamePlayerAddState extends State<GamePlayerAdd> {
                 foregroundColor: Colors.white,
               ),
               onPressed: () {
-                if ((_selectedName ?? '').trim().isEmpty ||
-                    _selectedSectionIndex == null) {
+                if (_selectedName.trim().isEmpty || _selectedSectionIndex < 0) {
                   return;
                 }
                 Navigator.pop(ctx, true);
@@ -236,13 +255,12 @@ class _GamePlayerAddState extends State<GamePlayerAdd> {
     );
 
     if (result == true &&
-        _selectedName != null &&
-        _selectedSectionIndex != null) {
+        _selectedName.isNotEmpty &&
+        _selectedSectionIndex >= 0) {
       final picked = players.firstWhere(
         (p) => p.fullName == _selectedName,
-        orElse: () => players.first,
       );
-      widget.onPlayerAssigned(picked, _selectedSectionIndex!);
+      widget.onPlayerAssigned(picked, _selectedSectionIndex);
     }
   }
 
