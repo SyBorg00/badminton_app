@@ -79,14 +79,14 @@ class _UserSettingsState extends State<UserSettings> {
               const SizedBox(height: 30),
               AppInput(
                 controller: _defaultCourtRate,
-                label: 'Default Court Rate',
+                label: 'Default Court Rate (₱)',
                 type: TextInputType.number,
                 inputFormatter: [FilteringTextInputFormatter.digitsOnly],
               ),
               const SizedBox(height: 30),
               AppInput(
                 controller: _defaultShuttleCockPrice,
-                label: 'Default Shuttlecock Price',
+                label: 'Default Shuttlecock Price (₱)',
                 type: TextInputType.number,
                 inputFormatter: [FilteringTextInputFormatter.digitsOnly],
               ),
