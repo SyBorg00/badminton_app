@@ -11,6 +11,7 @@ class Games {
     required this.court,
   });
 
+  //Function: get the total player count in each games
   int get playerCount {
     final seen = <String>{};
     for (final section in court.section) {
@@ -24,6 +25,7 @@ class Games {
     return seen.length;
   }
 
+  //Function: get current players (almost similar huh)
   List<Players> get currentPlayers {
     final Map<String, Players> unique = {};
     for (final section in court.section) {
@@ -37,6 +39,7 @@ class Games {
     return unique.values.toList();
   }
 
+  //Function: get the total COST of the game (not PRICE but let's stick to that to prevent further issues)
   double get totalPrice {
     double total = 0;
     for (final section in court.section) {
@@ -55,6 +58,7 @@ class Games {
     return total;
   }
 
+  //Function: get the total COST if the divide court equally is CHECKED
   double get perPlayerShare {
     if (court.isDivided && playerCount > 0) {
       return totalPrice / playerCount;
@@ -79,6 +83,7 @@ class GameCourt {
   });
 }
 
+//Should be court block but dunno about badminton terms
 class CourtSection {
   final List<Players>? players; //the players who join this court section
   final CourtSchedule schedule;
