@@ -67,6 +67,18 @@ class _GameViewState extends State<GameView> {
     final totalPrice = widget.games.totalPrice;
     final perPlayerShare = widget.games.perPlayerShare;
 
+    // Check if two time ranges overlap
+    bool scheduleOverlaps(CourtSchedule? sched1, CourtSchedule? sched2) {
+      if (sched1?.start == null ||
+          sched1?.end == null ||
+          sched2?.start == null ||
+          sched2?.end == null) {
+        return false; // no overlap if either is incomplete
+      }
+      return sched1!.start!.isBefore(sched2!.end!) &&
+          sched2.start!.isBefore(sched1.end!);
+    }
+
     //game player add handler
     void assignPlayerToSection(Players p, int sectionIndex) {
       setState(() {
@@ -83,6 +95,26 @@ class _GameViewState extends State<GameView> {
             ),
           );
           return;
+        }
+
+        // Check for schedule overlaps with other sections
+        for (var i = 0; i < widget.games.court.section.length; i++) {
+          if (i == sectionIndex) continue; // skip current section
+          final otherSection = widget.games.court.section[i];
+          if (otherSection?.players != null &&
+              otherSection!.players!.any((pl) => pl.id == p.id)) {
+            // Player is already in another section, check for overlap
+            if (scheduleOverlaps(schedule, otherSection.schedule)) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    '${p.fullName} is already assigned to Court ${i + 1} with an overlapping schedule',
+                  ),
+                ),
+              );
+              return;
+            }
+          }
         }
 
         // Enforce max of 4 players per section

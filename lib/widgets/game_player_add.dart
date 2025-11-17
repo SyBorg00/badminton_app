@@ -23,6 +23,18 @@ class _GamePlayerAddState extends State<GamePlayerAdd> {
   String? _selectedName;
   int? _selectedSectionIndex;
 
+  // Helper: check if two time ranges overlap
+  bool _scheduleOverlaps(CourtSchedule? sched1, CourtSchedule? sched2) {
+    if (sched1?.start == null ||
+        sched1?.end == null ||
+        sched2?.start == null ||
+        sched2?.end == null) {
+      return false; // no overlap if either is incomplete
+    }
+    return sched1!.start!.isBefore(sched2!.end!) &&
+        sched2.start!.isBefore(sched1.end!);
+  }
+
   Future<void> _openPicker() async {
     final players = widget.players;
     final sections = widget.sections;
@@ -122,8 +134,47 @@ class _GamePlayerAddState extends State<GamePlayerAdd> {
                       : '';
                   final playersCount = s?.players?.length ?? 0;
                   final fullBadge = playersCount >= 4 ? ' (full)' : '';
+
+                  // Check if selected player has overlapping schedule with this section
+                  bool hasOverlap = false;
+                  if (_selectedName != null) {
+                    try {
+                      final selectedPlayer = widget.players.firstWhere(
+                        (p) => p.fullName == _selectedName,
+                        orElse: () => throw Exception('Not found'),
+                      );
+                      // Check if player is already assigned to this section
+                      if (s?.players != null &&
+                          s!.players!.any((p) => p.id == selectedPlayer.id)) {
+                        hasOverlap = true; // already assigned
+                      } else {
+                        // Check for overlaps with other sections
+                        for (var j = 0; j < sections.length; j++) {
+                          if (j == i) continue;
+                          final otherSect = sections[j];
+                          if (otherSect?.players != null &&
+                              otherSect!.players!.any(
+                                (p) => p.id == selectedPlayer.id,
+                              )) {
+                            // Player in other section, check schedule overlap
+                            if (_scheduleOverlaps(
+                              s?.schedule,
+                              otherSect.schedule,
+                            )) {
+                              hasOverlap = true;
+                              break;
+                            }
+                          }
+                        }
+                      }
+                    } catch (e) {
+                      // player not found, no overlap check
+                    }
+                  }
+
+                  final overlapBadge = hasOverlap ? ' (unavailable)' : '';
                   final label =
-                      'Court ${i + 1}$dateLabel — $playersCount/4$fullBadge';
+                      'Court ${i + 1}$dateLabel — $playersCount/4$fullBadge$overlapBadge';
                   return DropdownMenuItem<int>(value: i, child: Text(label));
                 }),
                 onChanged: (v) =>
