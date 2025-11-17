@@ -15,7 +15,60 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _currentIndex = 0;
   final List<Games> _games = [];
-  final List<Players> _players = [];
+  final List<Players> _players = [
+    Players(
+      id: DateTime.now().microsecondsSinceEpoch.toString(),
+      nickName: 'Billy',
+      fullName: 'Billy Bob',
+      mobileNumber: '1234567890',
+      email: 'billy@example.com',
+      address: '123 Main St',
+      remarks: 'Good player',
+      level: PlayerLevel(
+        rank: RankRange(PlayerRank.intermediate, PlayerRank.levelD),
+        strength: StrengthRange(PlayerStrength.mid, PlayerStrength.strong),
+      ),
+    ),
+    Players(
+      id: DateTime.now().microsecondsSinceEpoch.toString(),
+      nickName: 'Ellie',
+      fullName: 'Ellie Smith',
+      mobileNumber: '0987654321',
+      email: 'ellie@example.com',
+      address: '456 Elm St',
+      remarks: 'Excellent player',
+      level: PlayerLevel(
+        rank: RankRange(PlayerRank.levelE, PlayerRank.levelD),
+        strength: StrengthRange(PlayerStrength.strong, PlayerStrength.strong),
+      ),
+    ),
+    Players(
+      id: DateTime.now().microsecondsSinceEpoch.toString(),
+      nickName: 'Charles',
+      fullName: 'Charles Brown',
+      mobileNumber: '1234567890',
+      email: 'charles@example.com',
+      address: '123 Main St',
+      remarks: 'Good player',
+      level: PlayerLevel(
+        rank: RankRange(PlayerRank.levelF, PlayerRank.levelE),
+        strength: StrengthRange(PlayerStrength.mid, PlayerStrength.strong),
+      ),
+    ),
+    Players(
+      id: DateTime.now().microsecondsSinceEpoch.toString(),
+      nickName: 'Henry',
+      fullName: 'Henry Ford',
+      mobileNumber: '1234567890',
+      email: 'henry@example.com',
+      address: '123 Main St',
+      remarks: 'Eh player',
+      level: PlayerLevel(
+        rank: RankRange(PlayerRank.intermediate, PlayerRank.levelF),
+        strength: StrengthRange(PlayerStrength.mid, PlayerStrength.strong),
+      ),
+    ),
+  ];
 
   void _handleAddGame(Games game) {
     setState(() {
