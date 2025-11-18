@@ -447,7 +447,7 @@ class _GameViewState extends State<GameView> {
                                       : <InlineSpan>[
                                           const TextSpan(
                                             text:
-                                                'Each player pays a full amount of ',
+                                                'One player pays a full amount of ',
                                           ),
                                           TextSpan(
                                             text:
