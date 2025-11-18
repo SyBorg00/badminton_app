@@ -189,7 +189,9 @@ class _GamePlayerAddState extends State<GamePlayerAdd> {
                     }
                   }
 
-                  final overlapBadge = hasOverlap ? ' (unavailable)' : '';
+                  final overlapBadge = (hasOverlap && playersCount < 4)
+                      ? ' (unavailable)'
+                      : '';
                   final label =
                       'Court ${i + 1}$dateLabel — $playersCount/4$fullBadge$overlapBadge';
                   return DropdownMenuItem<int>(value: i, child: Text(label));
