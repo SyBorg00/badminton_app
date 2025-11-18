@@ -37,7 +37,7 @@ class _CourtSectionWidgetState extends State<CourtSectionWidget> {
   void didUpdateWidget(covariant CourtSectionWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     // If parent sections changed (e.g., when opening editor with existing
-    // data), refresh the local schedule list to reflect those values.
+    // data), refresh the local schedule list to reflect those values. (Used when editing said data)
     final oldLen = oldWidget.section?.length ?? 0;
     final newLen = widget.section?.length ?? 0;
     if (oldLen != newLen) {
@@ -86,6 +86,23 @@ class _CourtSectionWidgetState extends State<CourtSectionWidget> {
       initialDate: sched.start ?? DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.green,
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.green,
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     if (pickedDate == null || !mounted) return;
 
@@ -97,6 +114,21 @@ class _CourtSectionWidgetState extends State<CourtSectionWidget> {
     final TimeOfDay? startTime = await showTimePicker(
       context: context,
       initialTime: initialStartTime,
+      builder: (context, child) => Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme: const ColorScheme.light(
+            primary: Colors.green,
+            onPrimary: Colors.white,
+            onSurface: Colors.black,
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.green,
+            ),
+          ),
+        ),
+        child: child!,
+      ),
     );
     if (startTime == null || !mounted) return;
 
@@ -111,6 +143,21 @@ class _CourtSectionWidgetState extends State<CourtSectionWidget> {
     final TimeOfDay? endTime = await showTimePicker(
       context: context,
       initialTime: initialEndTime,
+      builder: (context, child) => Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme: const ColorScheme.light(
+            primary: Colors.green,
+            onPrimary: Colors.white,
+            onSurface: Colors.black,
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.green,
+            ),
+          ),
+        ),
+        child: child!,
+      ),
     );
     if (endTime == null || !mounted) return;
 
