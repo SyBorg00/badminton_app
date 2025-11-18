@@ -19,7 +19,7 @@ class GameView extends StatefulWidget {
 
 class _GameViewState extends State<GameView> {
   Future<void> _openEditGame() async {
-    final result = await Navigator.push<Games>(
+    final result = await Navigator.push<dynamic>(
       context,
       MaterialPageRoute(
         builder: (context) => GameEdit(
