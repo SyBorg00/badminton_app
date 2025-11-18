@@ -64,9 +64,7 @@ class _GameViewState extends State<GameView> {
     }
 
     //price computation variables
-    final totalPrice =
-        widget.games.perPlayerCourtShare +
-        widget.games.perPlayerShuttleCockShare;
+    final totalPrice = widget.games.totalPrice + shuttlecockPrice;
     final perPlayerCourtShare = widget.games.perPlayerCourtShare;
     final perPlayerShuttleShare = widget.games.perPlayerShuttleCockShare;
 
