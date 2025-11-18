@@ -64,8 +64,11 @@ class _GameViewState extends State<GameView> {
     }
 
     //price computation variables
-    final totalPrice = widget.games.totalPrice;
-    final perPlayerShare = widget.games.perPlayerShare;
+    final totalPrice =
+        widget.games.perPlayerCourtShare +
+        widget.games.perPlayerShuttleCockShare;
+    final perPlayerCourtShare = widget.games.perPlayerCourtShare;
+    final perPlayerShuttleShare = widget.games.perPlayerShuttleCockShare;
 
     // Check if two time ranges overlap
     bool scheduleOverlaps(CourtSchedule? sched1, CourtSchedule? sched2) {
@@ -420,21 +423,53 @@ class _GameViewState extends State<GameView> {
                                           ),
                                           TextSpan(
                                             text:
-                                                '₱${perPlayerShare.toStringAsFixed(2)}',
+                                                '₱${perPlayerCourtShare.toStringAsFixed(2)}',
                                             style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                               color: Colors.green,
                                             ),
                                           ),
                                           const TextSpan(
+                                            text: ' for court fees and ',
+                                          ),
+                                          TextSpan(
                                             text:
-                                                ' for court and shuttlecock fees',
+                                                '₱${perPlayerShuttleShare.toStringAsFixed(2)}',
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.green,
+                                            ),
+                                          ),
+                                          const TextSpan(
+                                            text: ' for shuttlecock fees',
                                           ),
                                         ]
                                       : <InlineSpan>[
                                           const TextSpan(
                                             text:
-                                                'Each player pays the full amount for court and shuttlecock fees',
+                                                'Each player pays a full amount of ',
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                '₱${perPlayerCourtShare.toStringAsFixed(2)}',
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.green,
+                                            ),
+                                          ),
+                                          const TextSpan(
+                                            text: ' for court fees and ',
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                '₱${perPlayerShuttleShare.toStringAsFixed(2)}',
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.green,
+                                            ),
+                                          ),
+                                          const TextSpan(
+                                            text: ' for shuttlecock fees',
                                           ),
                                         ],
                                 ),

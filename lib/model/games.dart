@@ -53,17 +53,22 @@ class Games {
         total += court.courtRate * duration;
       }
     }
-
-    total += court.shuttlecockPrice;
     return total;
   }
 
   //Function: get the total COST if the divide court equally is CHECKED
-  double get perPlayerShare {
+  double get perPlayerCourtShare {
     if (court.isDivided && playerCount > 0) {
       return totalPrice / playerCount;
     }
     return totalPrice;
+  }
+
+  double get perPlayerShuttleCockShare {
+    if (court.isDivided && playerCount > 0) {
+      return court.shuttlecockPrice / playerCount;
+    }
+    return court.shuttlecockPrice;
   }
 }
 
